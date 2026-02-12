@@ -174,9 +174,11 @@ export default function Home() {
                 View Live Dashboard
               </Button>
             </Link>
+            <Link href="/contact-sales">
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
               Contact Sales
             </Button>
+            </Link>
           </div>
         </div>
       </section>
