@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Button } from '../ui/Button';
 
 interface NavbarProps {
   className?: string;
@@ -9,7 +8,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ className }) => {
   return (
-    <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-6">
+    <header className={`h-16 bg-surface border-b border-border flex items-center justify-between px-6 ${className || ''}`}>
       {/* Search */}
       <div className="flex-1 max-w-xl">
         <div className="relative">

@@ -65,7 +65,7 @@ router.patch('/:id', async (req: Request, res: Response, next: NextFunction) => 
  */
 router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const { id: _id } = req.params; // eslint-disable-line @typescript-eslint/no-unused-vars
 
     // TODO: Implement alert deletion logic
     res.status(204).send();

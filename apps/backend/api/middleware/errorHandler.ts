@@ -9,7 +9,7 @@ export function errorHandler(
   err: CustomError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
   const statusCode = err.statusCode || 500;
   const isOperational = err.isOperational || false;

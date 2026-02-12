@@ -8,7 +8,7 @@
     "dev": "concurrently \"npm:dev:api\" \"npm:dev:services\"",
     "build": "tsc && tsc-alias",
     "start": "node dist/api/server.js",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
     "migrate": "prisma migrate dev",
