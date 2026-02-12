@@ -13,7 +13,8 @@
     "test": "pnpm --filter \"./packages/**\" test && pnpm --filter \"./apps/**\" test",
     "lint": "pnpm --parallel --filter \"./packages/**\" lint && pnpm --filter \"./apps/**\" lint",
     "clean": "pnpm --parallel --filter \"./packages/**\" clean && pnpm --filter \"./apps/**\" clean",
-    "setup": "pnpm install && pnpm build"
+    "setup": "pnpm install && pnpm build",
+    "start": "pnpm --filter ./apps/backend start"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

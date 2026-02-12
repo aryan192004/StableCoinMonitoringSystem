@@ -7,7 +7,7 @@
     "dev:services": "cd services && uvicorn main:app --reload --port 8001",
     "dev": "concurrently \"npm:dev:api\" \"npm:dev:services\"",
     "build": "tsc && tsc-alias",
-    "start": "node dist/api/server.js",
+    "start": "concurrently \"npm:dev:api\" \"npm:dev:services\"",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",

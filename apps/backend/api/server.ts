@@ -9,6 +9,7 @@ import { logger } from './middleware/logger';
 import stablecoinRoutes from './routes/stablecoin';
 import alertRoutes from './routes/alert';
 import healthRoutes from './routes/health';
+import riskRoutes from './routes/risk';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(logger);
 app.use('/api/health', healthRoutes);
 app.use('/api/stablecoins', stablecoinRoutes);
 app.use('/api/alerts', alertRoutes);
+app.use('/api/risk', riskRoutes);
 
 // Root endpoint
 app.get('/', (req: Request, res: Response) => {
