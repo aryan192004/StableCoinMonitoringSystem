@@ -1,0 +1,65 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Deploy Frontend
+        run: |
+          echo "Deploying frontend to Azure..."
+          # Add your deployment commands here
+          # Example: az webapp deploy or kubectl apply
+          
+      - name: Deploy Backend
+        run: |
+          echo "Deploying backend to Azure..."
+          # Add your deployment commands here
+          
+      - name: Deploy FastAPI
+        run: |
+          echo "Deploying FastAPI services to Azure..."
+          # Add your deployment commands here
+          
+      - name: Run Database Migrations
+        run: |
+          echo "Running database migrations..."
+          # Add migration commands here
+          
+      - name: Health Check
+        run: |
+          echo "Performing health checks..."
+          # Add health check commands here
+          
+      - name: Notify on Success
+        if: success()
+        run: echo "Deployment successful!"
+        
+      - name: Notify on Failure
+        if: failure()
+        run: echo "Deployment failed!"

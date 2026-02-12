@@ -1,0 +1,38 @@
+{
+  "name": "stablecoin-monitoring-platform",
+  "version": "1.0.0",
+  "description": "Real-time stablecoin monitoring platform for peg deviation, liquidity, and risk analytics",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/**\" dev",
+    "build": "pnpm --filter \"./packages/**\" build && pnpm --filter \"./apps/**\" build",
+    "test": "pnpm --filter \"./packages/**\" test && pnpm --filter \"./apps/**\" test",
+    "lint": "pnpm --parallel --filter \"./packages/**\" lint && pnpm --filter \"./apps/**\" lint",
+    "clean": "pnpm --parallel --filter \"./packages/**\" clean && pnpm --filter \"./apps/**\" clean",
+    "setup": "pnpm install && pnpm build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "prettier": "^3.1.0",
+    "eslint": "^8.55.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [
+    "stablecoin",
+    "crypto",
+    "fintech",
+    "monitoring",
+    "risk-analytics",
+    "liquidity"
+  ],
+  "author": "Stablecoin Monitoring Team",
+  "license": "MIT"
+}

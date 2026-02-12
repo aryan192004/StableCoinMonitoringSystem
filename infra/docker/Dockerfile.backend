@@ -1,0 +1,44 @@
+FROM node:18-alpine AS base
+
+# Install dependencies
+FROM base AS deps
+RUN apk add --no-cache libc6-compat python3 make g++
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+COPY apps/backend/package.json ./apps/backend/
+COPY packages/config/package.json ./packages/config/
+
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
+
+# Build the application
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build backend
+RUN corepack enable pnpm && \
+    pnpm --filter @stablecoin/config build && \
+    pnpm --filter @stablecoin/backend build
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodeuser
+
+# Copy built application
+COPY --from=builder --chown=nodeuser:nodejs /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder --chown=nodeuser:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodeuser:nodejs /app/packages ./packages
+
+USER nodeuser
+
+EXPOSE 8000
+
+CMD ["node", "apps/backend/dist/api/server.js"]
