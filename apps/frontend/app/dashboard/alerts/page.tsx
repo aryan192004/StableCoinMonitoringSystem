@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout';
 import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui';
 import { Badge } from '@/components/ui/Badge';
@@ -34,6 +34,8 @@ export default function AlertsPage() {
     },
   ]);
 
+  const formRef = useRef<HTMLDivElement>(null);
+
   const recentAlerts = [
     {
       stablecoin: 'USDC',
@@ -64,8 +66,22 @@ export default function AlertsPage() {
             <h1 className="mb-2">Alert Management</h1>
             <p className="text-textSecondary">Configure and monitor custom alert conditions</p>
           </div>
-          <Button variant="primary">+ Create Alert</Button>
-        </div>
+          <Button
+  variant="primary"
+  onClick={() => {
+    // 1. scroll to form
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+    // 2. focus first field after scroll
+    setTimeout(() => {
+      document.getElementById('alert-stablecoin')?.focus();
+    }, 400);
+  }}
+>
+  + Create Alert
+</Button>
+
+          </div>
 
         {/* Alert Summary Cards */}
         <div className="grid md:grid-cols-3 gap-6">
@@ -216,6 +232,7 @@ export default function AlertsPage() {
         </Card>
 
         {/* Alert Configuration Form */}
+        <div ref={formRef}>
         <Card>
           <CardHeader>
             <CardTitle>Create New Alert</CardTitle>
@@ -226,7 +243,7 @@ export default function AlertsPage() {
                 <label className="block text-sm font-medium text-textPrimary mb-2">
                   Select Stablecoin
                 </label>
-                <select className="w-full px-4 py-2 border border-border rounded-lg bg-surface focus:outline-none focus:ring-2 focus:ring-primary">
+                <select id="alert-stablecoin" className="w-full px-4 py-2 border border-border rounded-lg bg-surface focus:outline-none focus:ring-2 focus:ring-primary">
                   <option>USDT</option>
                   <option>USDC</option>
                   <option>DAI</option>
@@ -272,6 +289,7 @@ export default function AlertsPage() {
             </div>
           </CardBody>
         </Card>
+        </div>
       </div>
     </DashboardLayout>
   );
