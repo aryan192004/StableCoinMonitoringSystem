@@ -30,9 +30,12 @@ export default function Home() {
                     View Dashboard
                   </Button>
                 </Link>
-                <Button variant="outline" size="lg">
-                  Request Demo
+                <Link href="/request-demo">
+                <Button variant="primary" size="lg">
+                 Request Demo
                 </Button>
+                </Link>
+
               </div>
               <div className="flex items-center gap-8 pt-4">
                 <div>
@@ -171,9 +174,11 @@ export default function Home() {
                 View Live Dashboard
               </Button>
             </Link>
+            <Link href="/contact-sales">
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
               Contact Sales
             </Button>
+            </Link>
           </div>
         </div>
       </section>
