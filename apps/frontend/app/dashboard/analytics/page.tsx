@@ -237,6 +237,8 @@ export default function AnalyticsPage() {
 
         {/* Risk Breakdown (unchanged) */}
         <div className="grid lg:grid-cols-3 gap-6">
+          
+
           <Card>
             <CardHeader>
               <CardTitle>Exchange Concentration</CardTitle>
@@ -257,6 +259,8 @@ export default function AnalyticsPage() {
               </div>
             </CardBody>
           </Card>
+
+          
         </div>
       </div>
     </DashboardLayout>
