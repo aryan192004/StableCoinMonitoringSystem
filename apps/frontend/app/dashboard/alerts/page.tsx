@@ -1,4 +1,9 @@
 'use client';
+import {
+  BellIcon,
+  ExclamationTriangleIcon,
+  ClockIcon,
+} from '@heroicons/react/24/outline';
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { DashboardLayout } from '@/components/layout';
@@ -210,7 +215,7 @@ export default function AlertsPage() {
                 </h3>
               </div>
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl">🔔</span>
+                <BellIcon className="w-6 h-6 text-primary" />
               </div>
             </div>
           </Card>
@@ -221,7 +226,7 @@ export default function AlertsPage() {
                 <h3 className="text-2xl font-semibold text-textPrimary">{alerts.length}</h3>
               </div>
               <div className="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center">
-                <span className="text-2xl">⚠️</span>
+                <ExclamationTriangleIcon className="w-6 h-6 text-warning" />
               </div>
             </div>
           </Card>
@@ -234,7 +239,7 @@ export default function AlertsPage() {
                 </h3>
               </div>
               <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
-                <span className="text-2xl">⏱️</span>
+               <ClockIcon className="w-6 h-6 text-success" />
               </div>
             </div>
           </Card>
