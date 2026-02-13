@@ -2,151 +2,160 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* ======================
+   DARK THEME FOUNDATION
+====================== */
 
 :root {
-  /* Design System Colors */
-  --color-primary: #3B82F6;
-  --color-primary-hover: #2563EB;
-  --color-primary-light: #DBEAFE;
-  
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
-  
-  --color-background: #F5F7FB;
-  --color-surface: #FFFFFF;
-  --color-border: #E5E7EB;
-  
-  --color-text-primary: #111827;
-  --color-text-secondary: #6B7280;
-  --color-text-tertiary: #9CA3AF;
-  
-  /* Spacing */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-2xl: 48px;
-  --spacing-3xl: 64px;
-  
-  /* Border Radius */
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
-  
-  /* Shadows */
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
-  --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.08);
-  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --bg: #0B0F17;
+  --surface: #111827;
+  --surface-elevated: #182233;
+  --surface-hover: #1F2A3A;
+  --border: #1F2937;
+
+  --text-primary: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+
+  --primary: #22D3EE;
+  --success: #22C55E;
+  --warning: #FACC15;
+  --danger: #F43F5E;
 }
 
-* {
-  margin: 0;
-  padding: 0;
+/* ======================
+   BASE RESET
+====================== */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+html, body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
 }
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ======================
+   REMOVE WHITE DEFAULTS
+====================== */
+
+/* Tables */
+table {
+  background: transparent;
 }
 
-/* Custom scrollbar */
+thead {
+  background: var(--surface-elevated);
+}
+
+tbody tr {
+  background: transparent;
+}
+
+tbody tr:hover {
+  background: var(--surface-hover);
+}
+
+/* Div defaults */
+div, section, article, aside, nav, header, footer {
+  background-color: transparent;
+}
+
+/* Force replace common light classes */
+.bg-white,
+.bg-gray-50,
+.bg-gray-100,
+.hover\:bg-gray-50:hover,
+.hover\:bg-gray-100:hover {
+  background-color: var(--surface) !important;
+}
+
+/* ======================
+   COMPONENT STYLES
+====================== */
+
+@layer components {
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+  }
+
+  .card:hover {
+    background: var(--surface-elevated);
+  }
+
+  .alert-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: 0.2s ease;
+  }
+
+  .alert-card:hover {
+    background: var(--surface-hover);
+  }
+
+  .nav-item {
+    color: var(--text-secondary);
+    transition: 0.2s;
+  }
+
+  .nav-item:hover {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: black;
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+}
+
+/* ======================
+   PROGRESS / BAR FIX
+====================== */
+
+progress {
+  background-color: var(--surface);
+}
+
+progress::-webkit-progress-bar {
+  background-color: var(--surface);
+}
+
+progress::-webkit-progress-value {
+  background-color: var(--primary);
+}
+
+/* ======================
+   SCROLLBAR
+====================== */
+
 ::-webkit-scrollbar {
   width: 8px;
-  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F3F4F6;
+  background: #020617;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
-  border-radius: 4px;
+  background: #1F2937;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
-}
-
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--color-text-primary);
-}
-
-h1 {
-  font-size: 32px;
-}
-
-h2 {
-  font-size: 24px;
-}
-
-h3 {
-  font-size: 20px;
-}
-
-/* Utility Classes */
-@layer components {
-  .card {
-    @apply bg-surface rounded-xl2 shadow-card p-6;
-  }
-  
-  .card-hover {
-    @apply transition-shadow duration-200 hover:shadow-cardHover;
-  }
-  
-  .btn-primary {
-    @apply bg-primary text-white rounded-lg px-4 py-2 font-medium transition-colors hover:bg-primary-hover;
-  }
-  
-  .btn-secondary {
-    @apply border border-border text-textPrimary rounded-lg px-4 py-2 font-medium transition-colors hover:bg-gray-50;
-  }
-  
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-  
-  .badge-success {
-    @apply bg-success/10 text-success;
-  }
-  
-  .badge-warning {
-    @apply bg-warning/10 text-warning;
-  }
-  
-  .badge-danger {
-    @apply bg-danger/10 text-danger;
-  }
-}
-
-/* Animations */
-@keyframes countUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-count-up {
-  animation: countUp 0.5s ease-out;
+  background: #374151;
 }
