@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Button } from '../ui/Button';
 
 interface NavbarProps {
   className?: string;
@@ -8,7 +9,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ className }) => {
   return (
-    <header className={`h-16 bg-surface border-b border-border flex items-center justify-between px-6 ${className || ''}`}>
+    <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-6">
       {/* Search */}
       <div className="flex-1 max-w-xl">
         <div className="relative">
@@ -49,7 +50,7 @@ export const Navbar: React.FC<NavbarProps> = ({ className }) => {
         </button>
 
         {/* Settings */}
-        <button className="p-2 text-textSecondary hover:text-textPrimary transition-colors">
+        {/* <button className="p-2 text-textSecondary hover:text-textPrimary transition-colors">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -64,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({ className }) => {
               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-        </button>
+        </button> */}
 
         {/* User Profile */}
         <div className="flex items-center gap-3 pl-4 border-l border-border">
