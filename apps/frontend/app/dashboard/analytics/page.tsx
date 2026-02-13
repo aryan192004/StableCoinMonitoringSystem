@@ -169,27 +169,6 @@ export default function AnalyticsPage() {
         <div className="grid lg:grid-cols-3 gap-6">
           
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Exchange Concentration</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <div className="space-y-3">
-                {[
-                  { exchange: 'Binance', share: 42 },
-                  { exchange: 'Coinbase', share: 28 },
-                  { exchange: 'Kraken', share: 15 },
-                  { exchange: 'Others', share: 15 },
-                ].map((ex, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-textSecondary">{ex.exchange}</span>
-                    <span className="text-sm font-semibold text-textPrimary">{ex.share}%</span>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-
           
         </div>
       </div>
