@@ -59,3 +59,37 @@ export interface RiskIndicator {
     reserveTransparency: number;
   };
 }
+
+// Liquidity Prediction Types
+export interface LiquidityPrediction {
+  stablecoin: string;
+  predictions: {
+    '1h': number;
+    '1d': number;
+    '1w': number;
+    '1m': number;
+  };
+  confidence: number;
+  timestamp: string;
+  modelVersion?: string;
+  status: 'success' | 'error';
+}
+
+// Anomaly Detection Types
+export interface AnomalyAlert {
+  type: string;
+  severity: 'Low' | 'Medium' | 'High';
+  message: string;
+}
+
+export interface AnomalyDetection {
+  stablecoin: string;
+  anomaly_score: number;
+  is_anomaly: boolean;
+  severity: 'Normal' | 'Low' | 'Medium' | 'High';
+  alerts: AnomalyAlert[];
+  confidence: number;
+  timestamp: string;
+  modelVersion?: string;
+  status: 'success' | 'error';
+}

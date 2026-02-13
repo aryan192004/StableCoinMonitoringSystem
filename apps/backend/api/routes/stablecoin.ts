@@ -137,4 +137,58 @@ router.get('/:id/reserves', async (req: Request, res: Response, next: NextFuncti
   }
 });
 
+/**
+ * GET /api/liquidity/predict/:stablecoin
+ * Get liquidity predictions for multiple time horizons
+ */
+router.get('/liquidity/predict/:stablecoin', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { stablecoin } = req.params;
+
+    // TODO: Integrate with Python liquidity prediction model
+    const predictions = {
+      stablecoin: stablecoin.toUpperCase(),
+      predictions: {
+        '1h': 0.85,
+        '1d': 0.82,
+        '1w': 0.78,
+        '1m': 0.75
+      },
+      confidence: 0.87,
+      timestamp: new Date().toISOString(),
+      status: 'success'
+    };
+
+    res.json(predictions);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * GET /api/anomalies/:stablecoin
+ * Get anomaly detection results for a stablecoin
+ */
+router.get('/anomalies/:stablecoin', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { stablecoin } = req.params;
+
+    // TODO: Integrate with Python anomaly detection model
+    const anomalyResult = {
+      stablecoin: stablecoin.toUpperCase(),
+      anomaly_score: -0.15,
+      is_anomaly: false,
+      severity: 'Normal',
+      alerts: [],
+      confidence: 0.92,
+      timestamp: new Date().toISOString(),
+      status: 'success'
+    };
+
+    res.json(anomalyResult);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

@@ -2,8 +2,11 @@
 
 # Machine Learning
 xgboost>=2.0.0              # XGBoost model for risk scoring
-scikit-learn>=1.3.0         # ML utilities, train/test split, metrics
+scikit-learn>=1.3.0         # ML utilities, train/test split, metrics, Isolation Forest
 joblib>=1.3.0               # Model serialization
+
+# Deep Learning
+torch>=2.1.0                # PyTorch for LSTM liquidity prediction model
 
 # Data Processing
 numpy>=1.24.0               # Numerical computing

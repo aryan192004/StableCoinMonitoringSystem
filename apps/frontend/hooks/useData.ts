@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { apiClient } from '@/utils/api';
-import type { Stablecoin } from '@/types';
+import type { Stablecoin, LiquidityPrediction, AnomalyDetection } from '@/types';
 
 const fetcher = (url: string) => apiClient.get(url).then(res => res.data);
 
@@ -85,5 +85,47 @@ export function useWebSocket(url: string) {
     socket,
     isConnected,
     lastMessage,
+  };
+}
+
+/**
+ * Hook to fetch liquidity predictions for a stablecoin
+ */
+export function useLiquidityPrediction(stablecoin: string, refreshInterval: number = 60000) {
+  const { data, error, mutate } = useSWR<LiquidityPrediction>(
+    stablecoin ? `/liquidity/predict/${stablecoin}` : null,
+    fetcher,
+    { 
+      refreshInterval,
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    prediction: data,
+    isLoading: !error && !data,
+    isError: error,
+    refresh: mutate,
+  };
+}
+
+/**
+ * Hook to fetch anomaly detection results for a stablecoin
+ */
+export function useAnomalyDetection(stablecoin: string, refreshInterval: number = 30000) {
+  const { data, error, mutate } = useSWR<AnomalyDetection>(
+    stablecoin ? `/anomalies/${stablecoin}` : null,
+    fetcher,
+    { 
+      refreshInterval,
+      revalidateOnFocus: true,
+    }
+  );
+
+  return {
+    anomaly: data,
+    isLoading: !error && !data,
+    isError: error,
+    refresh: mutate,
   };
 }

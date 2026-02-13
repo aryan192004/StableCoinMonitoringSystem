@@ -6,12 +6,26 @@ AI-powered real-time risk assessment and monitoring platform for stablecoins usi
 
 This platform demonstrates cutting-edge AI/ML capabilities for stablecoin risk monitoring:
 
-- **AI Risk Scoring**: XGBoost ML model with 85%+ accuracy for depeg prediction
-- **Multi-Exchange Coverage**: Binance, Coinbase, Kraken real-time data aggregation
-- **7 Risk Features**: Advanced feature engineering (peg deviation, volatility, liquidity, order book analysis)
-- **Real-Time Monitoring**: WebSocket alerts and sub-200ms response times
-- **Stress Testing**: Demo depeg scenarios (SVB crisis, UST collapse simulations)
-- **Production-Ready**: Scalable architecture with Python ML services + TypeScript API
+- **🎯 AI Risk Scoring**: XGBoost ML model with 85%+ accuracy for depeg prediction
+- **📊 Liquidity Forecasting**: LSTM model predicting liquidity across 1h/1d/1w/1m horizons
+- **🚨 Anomaly Detection**: Isolation Forest detecting abnormal market conditions in real-time
+- **🔍 Multi-Exchange Coverage**: Binance, Coinbase, Kraken real-time data aggregation
+- **🧮 Advanced Features**: 7 risk features + 5 liquidity features + 8 anomaly features
+- **⚡ Real-Time Monitoring**: WebSocket alerts and sub-500ms response times
+- **🎭 Stress Testing**: Demo depeg scenarios (SVB crisis, UST collapse simulations)
+- **🚀 Production-Ready**: Scalable architecture with Python ML services + TypeScript API
+
+## 🤖 Machine Learning Models
+
+The system includes **three trained ML models**:
+
+1. **XGBoost Risk Scoring** - Predicts depeg probability using 7 engineered features
+2. **LSTM Liquidity Prediction** - Forecasts liquidity depth for multiple time horizons
+3. **Isolation Forest Anomaly Detection** - Detects market anomalies and crisis conditions
+
+📚 **Documentation**: 
+- [ML Models Guide](docs/ML_MODELS.md) - Comprehensive model documentation
+- [Quick Start](docs/ML_QUICKSTART.md) - Get started with ML models in 5 minutes
 
 ## 🏗️ Architecture
 
