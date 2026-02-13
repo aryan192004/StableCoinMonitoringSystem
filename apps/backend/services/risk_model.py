@@ -157,46 +157,11 @@ class RiskScoringModel:
         spread = features[0, 5]
         volume_anom = features[0, 6]
 
-        # Weighted scoring (weights based on domain knowledge)
-        weights = {
-            "peg_deviation": 0.25,
-            "duration": 0.15,
-            "volatility": 0.15,
-            "liquidity": 0.15,
-            "imbalance": 0.10,
-            "spread": 0.10,
-            "volume_anomaly": 0.10,
-        }
-
-        # Normalize and score each feature
-        scores = {
-            "peg_deviation": min(peg_dev / 5.0, 1.0),  # 5% = max
-            "duration": min(duration / 180.0, 1.0),  # 3 hours = max
-            "volatility": min(volatility / 0.05, 1.0),  # 5% std = max
-            "liquidity": 1 - min(liquidity, 1.0),  # Low liquidity = high risk
-            "imbalance": imbalance,  # Already normalized
-            "spread": min(spread / 0.02, 1.0),  # 2% spread = max
-            "volume_anomaly": min(abs(volume_anom) / 5.0, 1.0),  # 5-sigma = max
-        }
-
-        # Calculate weighted score
-        risk_score = sum(scores[feature] * weight for feature, weight in weights.items())
-
-        risk_score = int(risk_score * 100)
-
-        # Determine level
-        if risk_score < 30:
-            risk_level = "Low"
-        elif risk_score < 60:
-            risk_level = "Medium"
-        elif risk_score < 80:
-            risk_level = "High"
-        else:
-            risk_level = "Critical"
-
-        depeg_probability = risk_score / 100.0
-        confidence = 0.75  # Lower confidence for rule-based
-
+        # All values replaced with '-'
+        risk_score = '-'
+        risk_level = '-'
+        depeg_probability = '-'
+        confidence = '-'
         return risk_score, risk_level, depeg_probability, confidence
 
     def get_feature_importance(self) -> Dict[str, float]:

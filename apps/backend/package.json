@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev:api": "nodemon api/server.ts",
-    "dev:services": "cd services && uvicorn main:app --reload --port 8001",
+    "dev:services": "uvicorn services.main:app --reload --port 8001",
     "dev": "concurrently \"npm:dev:api\" \"npm:dev:services\"",
     "build": "tsc && tsc-alias",
     "start": "concurrently \"npm:dev:api\" \"npm:dev:services\"",

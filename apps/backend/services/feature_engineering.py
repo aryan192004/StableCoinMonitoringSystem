@@ -398,46 +398,27 @@ if __name__ == "__main__":
     # Initialize feature engineer
     engineer = FeatureEngineer()
 
-    # Mock data
-    current_price = 0.9880  # 1.2% depeg
-
-    orderbook = {
-        "bids": [{"price": 0.9879, "volume": 1500000} for _ in range(50)],
-        "asks": [{"price": 0.9881, "volume": 800000} for _ in range(50)],
-    }
-
-    ohlcv_history = [
-        {"price_close": 1.0 + np.random.uniform(-0.01, 0.01), "volume_traded": 5e6}
-        for _ in range(1440)
-    ]
-
-    multi_exchange_prices = {
-        "binance": {"price": 0.9880},
-        "coinbase": {"price": 0.9874},
-        "kraken": {"price": 0.9892},
-    }
-
-    # Compute features
-    features = engineer.compute_all_features(
-        current_price=current_price,
-        orderbook=orderbook,
-        ohlcv_history=ohlcv_history,
-        multi_exchange_prices=multi_exchange_prices,
-        stablecoin="USDT",
-    )
-
+    # All demo/mock data replaced with '-'
     print("Computed Risk Features:")
-    print(f"  Peg Deviation: {features.peg_deviation:.4f}%")
-    print(f"  Deviation Duration: {features.deviation_duration:.2f} min")
-    print(f"  Volatility: {features.volatility:.6f}")
-    print(f"  Liquidity Score: {features.liquidity_score:.4f}")
-    print(f"  Order Book Imbalance: {features.orderbook_imbalance:.4f}")
-    print(f"  Cross-Exchange Spread: {features.cross_exchange_spread:.4f}%")
-    print(f"  Volume Anomaly Score: {features.volume_anomaly_score:.4f}")
+    print("  Peg Deviation: -")
+    print("  Deviation Duration: -")
+    print("  Volatility: -")
+    print("  Liquidity Score: -")
+    print("  Order Book Imbalance: -")
+    print("  Cross-Exchange Spread: -")
+    print("  Volume Anomaly Score: -")
 
     print("\nFeature Array for ML Model:")
-    print(features.to_array())
+    print("-")
 
     print("\nNormalized Feature Scores:")
-    for key, value in features.to_dict().items():
-        print(f"  {key}: {value:.4f}")
+    for key in [
+        "peg_deviation_score",
+        "liquidity_stress_score",
+        "volatility_score",
+        "imbalance_score",
+        "spread_score",
+        "volume_anomaly_score",
+        "duration_score",
+    ]:
+        print(f"  {key}: -")

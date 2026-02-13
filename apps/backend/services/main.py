@@ -5,8 +5,8 @@ import uvicorn
 from dotenv import load_dotenv
 import os
 
-from .risk_engine.router import router as risk_router
-from .liquidity_monitor.router import router as liquidity_router
+from services.risk_engine.router import router as risk_router
+from services.liquidity_monitor.router import router as liquidity_router
 
 load_dotenv()
 
@@ -14,9 +14,9 @@ load_dotenv()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup and shutdown events"""
-    print("🚀 FastAPI Services starting up...")
+    print("FastAPI Services starting up...")
     yield
-    print("👋 FastAPI Services shutting down...")
+    print("FastAPI Services shutting down...")
 
 
 app = FastAPI(

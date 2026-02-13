@@ -10,26 +10,10 @@ export default function AlertsPage() {
   const [alerts] = useState([
     {
       id: 1,
-      stablecoin: 'USDT',
-      condition: 'Price deviation > 0.5%',
-      status: 'active',
-      lastTriggered: '2 hours ago',
-      triggerCount: 3,
-    },
-    {
-      id: 2,
-      stablecoin: 'USDC',
-      condition: 'Liquidity depth < $1B',
-      status: 'triggered',
-      lastTriggered: '15 minutes ago',
-      triggerCount: 1,
-    },
-    {
-      id: 3,
-      stablecoin: 'DAI',
-      condition: 'Risk score > 0.7',
-      status: 'active',
-      lastTriggered: 'Never',
+      stablecoin: '-',
+      condition: '-',
+      status: '-',
+      lastTriggered: '-',
       triggerCount: 0,
     },
   ]);
@@ -38,22 +22,10 @@ export default function AlertsPage() {
 
   const recentAlerts = [
     {
-      stablecoin: 'USDC',
-      message: 'Liquidity depth dropped below $1B on Binance',
-      severity: 'high',
-      time: '15 minutes ago',
-    },
-    {
-      stablecoin: 'USDT',
-      message: 'Price deviation exceeded 0.5% threshold',
-      severity: 'medium',
-      time: '2 hours ago',
-    },
-    {
-      stablecoin: 'BUSD',
-      message: 'Trading volume increased by 150%',
-      severity: 'low',
-      time: '5 hours ago',
+      stablecoin: '-',
+      message: '-',
+      severity: '-',
+      time: '-',
     },
   ];
 

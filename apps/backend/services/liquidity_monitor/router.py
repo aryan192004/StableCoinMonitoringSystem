@@ -50,42 +50,14 @@ async def analyze_liquidity(request: LiquidityAnalysisRequest) -> LiquidityAnaly
     - **exchanges**: List of exchange names to check
     """
     try:
-        # TODO: Implement actual liquidity fetching from exchanges
-        # This is a placeholder implementation
-
-        exchanges_data = []
-        total_liquidity = 0
-        total_spread = 0
-        warnings = []
-
-        for exchange in request.exchanges:
-            # Placeholder data
-            depth = OrderBookDepth(bids=5000000, asks=5100000, spread=0.0001)
-
-            exchange_data = ExchangeLiquidity(exchange=exchange, depth=depth, volume_24h=1000000)
-
-            exchanges_data.append(exchange_data)
-            total_liquidity += depth.bids + depth.asks
-            total_spread += depth.spread
-
-        avg_spread = total_spread / len(request.exchanges) if request.exchanges else 0
-
-        # Calculate liquidity score (0-1)
-        liquidity_score = min(total_liquidity / 100000000, 1.0)
-
-        # Check for warnings
-        if liquidity_score < 0.3:
-            warnings.append("Low liquidity detected")
-        if avg_spread > 0.005:
-            warnings.append("High bid-ask spread")
-
+        # All values replaced with '-'
         return LiquidityAnalysisResponse(
             stablecoin_id=request.stablecoin_id,
-            total_liquidity=round(total_liquidity, 2),
-            exchanges=exchanges_data,
-            avg_spread=round(avg_spread, 6),
-            liquidity_score=round(liquidity_score, 4),
-            warnings=warnings,
+            total_liquidity='-',
+            exchanges=[],
+            avg_spread='-',
+            liquidity_score='-',
+            warnings=['-'],
             analyzed_at=datetime.now(),
         )
     except Exception as e:

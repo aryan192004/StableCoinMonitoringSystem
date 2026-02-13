@@ -7,24 +7,18 @@ import { Button } from '@/components/ui';
 
 export default function StablecoinDetailPage() {
   const metrics = [
-    { label: 'Current Price', value: '$1.0001', change: 0.01, trend: 'up' as const },
-    { label: 'Market Cap', value: '$95.4B', change: 2.4, trend: 'up' as const },
-    { label: '24h Volume', value: '$42.3B', change: -1.2, trend: 'down' as const },
-    { label: 'Risk Score', value: '0.32', trend: 'neutral' as const },
+    { label: 'Current Price', value: '-', change: undefined, trend: 'neutral' as const },
+    { label: 'Market Cap', value: '-', change: undefined, trend: 'neutral' as const },
+    { label: '24h Volume', value: '-', change: undefined, trend: 'neutral' as const },
+    { label: 'Risk Score', value: '-', trend: 'neutral' as const },
   ];
 
   const liquidityMetrics = [
-    { exchange: 'Binance', depth: '$2.4B', spread: '0.01%', status: 'Excellent' },
-    { exchange: 'Coinbase', depth: '$1.8B', spread: '0.02%', status: 'Good' },
-    { exchange: 'Kraken', depth: '$840M', spread: '0.03%', status: 'Good' },
-    { exchange: 'Uniswap V3', depth: '$524M', spread: '0.05%', status: 'Fair' },
+    { exchange: '-', depth: '-', spread: '-', status: '-' },
   ];
 
   const reserves = [
-    { type: 'Cash', percentage: 45, amount: '$42.9B', color: 'bg-primary' },
-    { type: 'Treasury Bills', percentage: 35, amount: '$33.4B', color: 'bg-success' },
-    { type: 'Commercial Paper', percentage: 15, amount: '$14.3B', color: 'bg-warning' },
-    { type: 'Other', percentage: 5, amount: '$4.8B', color: 'bg-gray-400' },
+    { type: '-', percentage: 100, amount: '-', color: 'bg-gray-400' },
   ];
 
   return (

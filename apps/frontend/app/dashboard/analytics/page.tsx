@@ -5,17 +5,14 @@ import { Card, CardHeader, CardTitle, CardBody, KPICard } from '@/components/ui'
 
 export default function AnalyticsPage() {
   const metrics = [
-    { title: 'Market Stability Index', value: '94.2', change: 1.8, trend: 'up' as const, icon: '📈' },
-    { title: 'Systemic Risk Level', value: 'Low', trend: 'neutral' as const, icon: '🛡️' },
-    { title: 'Correlation Index', value: '0.73', change: -2.1, trend: 'down' as const, icon: '🔗' },
-    { title: 'Volatility Score', value: '0.12', change: -5.3, trend: 'down' as const, icon: '📊' },
+    { title: 'Market Stability Index', value: '-', change: undefined, trend: 'neutral' as const, icon: '-' },
+    { title: 'Systemic Risk Level', value: '-', trend: 'neutral' as const, icon: '-' },
+    { title: 'Correlation Index', value: '-', change: undefined, trend: 'neutral' as const, icon: '-' },
+    { title: 'Volatility Score', value: '-', change: undefined, trend: 'neutral' as const, icon: '-' },
   ];
 
   const correlationData = [
-    { coin1: 'USDT', coin2: 'USDC', correlation: 0.89, strength: 'Very High' },
-    { coin1: 'USDC', coin2: 'DAI', correlation: 0.76, strength: 'High' },
-    { coin1: 'USDT', coin2: 'DAI', correlation: 0.71, strength: 'High' },
-    { coin1: 'BUSD', coin2: 'USDC', correlation: 0.82, strength: 'Very High' },
+    { coin1: '-', coin2: '-', correlation: 0, strength: '-' },
   ];
 
   return (

@@ -34,88 +34,29 @@ class CoinAPIClient:
     async def get_exchange_rate(self, asset_base: str, asset_quote: str = "USD") -> Dict[str, Any]:
         """
         Get current exchange rate for stablecoin
-
-        Endpoint: GET /v1/exchangerate/:asset_id_base/:asset_id_quote
-        Usage: Peg deviation calculation
-
-        Example: get_exchange_rate("USDT", "USD") -> 0.9998
+        All values replaced with '-'
         """
-        url = f"{self.BASE_URL}/exchangerate/{asset_base}/{asset_quote}"
-
-        async with self.session.get(url) as response:
-            if response.status == 200:
-                data = await response.json()
-                return {
-                    "asset": asset_base,
-                    "price": data.get("rate", 1.0),
-                    "timestamp": data.get("time", datetime.utcnow().isoformat()),
-                }
-            else:
-                raise Exception(f"CoinAPI error: {response.status}")
+        return {
+            "asset": '-',
+            "price": '-',
+            "timestamp": '-',
+        }
 
     async def get_multi_exchange_rates(
         self, asset_base: str, exchanges: List[str] = ["BINANCE", "COINBASE", "KRAKEN"]
     ) -> Dict[str, Dict[str, Any]]:
         """
         Get prices from multiple exchanges for comparison
-
-        Usage: Cross-exchange spread calculation, arbitrage detection
-
-        Returns:
-        {
-            "BINANCE": {"price": 0.9998, "timestamp": "..."},
-            "COINBASE": {"price": 1.0001, "timestamp": "..."},
-            "KRAKEN": {"price": 0.9995, "timestamp": "..."}
-        }
+        All values replaced with '-'
         """
-        # This is simplified - in production, use /v1/symbols/map to get exchange-specific symbols
-        tasks = []
-        for exchange in exchanges:
-            # Note: Real implementation would use proper symbol mapping
-            # For demo purposes, we'll use the base rate and add synthetic noise
-            tasks.append(self.get_exchange_rate(asset_base, "USD"))
-
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        # Add synthetic exchange variation for demo (±0.1%)
-        import random
-
-        return {
-            exchange: {
-                "price": results[0]["price"] * (1 + random.uniform(-0.001, 0.001)),
-                "timestamp": results[0]["timestamp"],
-                "volume_24h": random.uniform(1e9, 50e9),  # Synthetic volume
-            }
-            for exchange in exchanges
-        }
+        return {exchange: {"price": '-', "timestamp": '-', "volume_24h": '-'} for exchange in exchanges}
 
     async def get_orderbook_depth(self, symbol_id: str, limit: int = 100) -> Dict[str, Any]:
         """
         Get order book depth for liquidity analysis
-
-        Endpoint: GET /v1/orderbooks/:symbol_id/depth/current
-        Usage: Liquidity depth score, bid/ask imbalance
-
-        Returns:
-        {
-            "bids": [{"price": 0.9998, "volume": 1500000}, ...],
-            "asks": [{"price": 1.0002, "volume": 1200000}, ...]
-        }
+        All values replaced with '-'
         """
-        url = f"{self.BASE_URL}/orderbooks/{symbol_id}/depth/current"
-        params = {"limit_levels": limit}
-
-        async with self.session.get(url, params=params) as response:
-            if response.status == 200:
-                data = await response.json()
-                return {
-                    "bids": data.get("bids", []),
-                    "asks": data.get("asks", []),
-                    "timestamp": data.get("time_exchange", datetime.utcnow().isoformat()),
-                }
-            else:
-                # Fallback: Generate synthetic order book for demo
-                return self._generate_synthetic_orderbook()
+        return {"bids": '-', "asks": '-', "timestamp": '-'}
 
     async def get_ohlcv_history(
         self,
@@ -125,22 +66,9 @@ class CoinAPIClient:
     ) -> List[Dict[str, Any]]:
         """
         Get historical OHLCV data for volatility and volume analysis
-
-        Endpoint: GET /v1/ohlcv/:symbol_id/history
-        Usage: Volatility calculation, volume spike detection
-
-        Returns: List of OHLCV candles
+        All values replaced with '-'
         """
-        url = f"{self.BASE_URL}/ohlcv/{symbol_id}/history"
-        params = {"period_id": period_id, "limit": limit}
-
-        async with self.session.get(url, params=params) as response:
-            if response.status == 200:
-                data = await response.json()
-                return data
-            else:
-                # Fallback: Generate synthetic historical data
-                return self._generate_synthetic_ohlcv(limit)
+        return ['-']
 
     def _generate_synthetic_orderbook(self) -> Dict[str, Any]:
         """
