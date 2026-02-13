@@ -1,5 +1,13 @@
 'use client';
 
+import {
+  BanknotesIcon,
+  ChartBarIcon,
+  CircleStackIcon,
+  BeakerIcon,
+} from '@heroicons/react/24/outline';
+
+
 import { DashboardLayout } from '@/components/layout';
 import { KPICard } from '@/components/ui';
 import {
@@ -14,38 +22,39 @@ import { RiskBadge } from '@/components/ui/Badge';
 
 export default function DashboardPage() {
   const kpiData = [
-    {
-      title: 'Total Market Cap',
-      value: '$150.2B',
-      change: 2.4,
-      trend: 'up' as const,
-      icon: '💰',
-      subtitle: 'Across all stablecoins',
-    },
-    {
-      title: 'Average Risk Score',
-      value: '0.24',
-      change: -3.2,
-      trend: 'down' as const,
-      icon: '📊',
-      subtitle: 'Lower is better',
-    },
-    {
-      title: 'Active Stablecoins',
-      value: '15',
-      trend: 'neutral' as const,
-      icon: '🪙',
-      subtitle: 'Being monitored',
-    },
-    {
-      title: 'Liquidity Depth',
-      value: '$8.4B',
-      change: 1.8,
-      trend: 'up' as const,
-      icon: '💧',
-      subtitle: 'Combined order books',
-    },
-  ];
+  {
+    title: 'Total Market Cap',
+    value: '$150.2B',
+    change: 2.4,
+    trend: 'up' as const,
+    icon: BanknotesIcon,
+    subtitle: 'Across all stablecoins',
+  },
+  {
+    title: 'Average Risk Score',
+    value: '0.24',
+    change: -3.2,
+    trend: 'down' as const,
+    icon: ChartBarIcon,
+    subtitle: 'Lower is better',
+  },
+  {
+    title: 'Active Stablecoins',
+    value: '15',
+    trend: 'neutral' as const,
+    icon: CircleStackIcon,
+    subtitle: 'Being monitored',
+  },
+  {
+    title: 'Liquidity Depth',
+    value: '$8.4B',
+    change: 1.8,
+    trend: 'up' as const,
+    icon: BeakerIcon,
+    subtitle: 'Combined order books',
+  },
+];
+
 
   const stablecoins = [
     { 
@@ -116,20 +125,25 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* KPI Cards */}
+       {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {kpiData.map((kpi, index) => (
-            <KPICard
-              key={index}
-              title={kpi.title}
-              value={kpi.value}
-              change={kpi.change}
-              trend={kpi.trend}
-              icon={<span className="text-2xl">{kpi.icon}</span>}
-              subtitle={kpi.subtitle}
-            />
-          ))}
+          {kpiData.map((kpi, index) => {
+            const Icon = kpi.icon;
+
+            return (
+              <KPICard
+                key={index}
+                title={kpi.title}
+                value={kpi.value}
+                change={kpi.change}
+                trend={kpi.trend}
+                icon={<Icon className="w-6 h-6" />}
+                subtitle={kpi.subtitle}
+              />
+            );
+          })}
         </div>
+
 
         {/* Stablecoins Table */}
         <div className="bg-surface rounded-xl2 shadow-card">
