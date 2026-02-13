@@ -262,7 +262,7 @@ async def detect_anomalies(stablecoin: str):
 async def get_market_stability(stablecoin: str):
     """
     Get Market Stability Index for a stablecoin.
-    
+
     Returns:
     - stability_index: 0-100 score (higher = more stable)
     - stability_level: Stable/Moderate/Unstable
@@ -272,16 +272,17 @@ async def get_market_stability(stablecoin: str):
         # TODO: Integrate MarketStabilityModel
         # For now, return mock predictions
         import numpy as np
+
         np.random.seed(hash(stablecoin) % 2**32)
         stability_index = float(np.random.uniform(60, 95))
-        
+
         if stability_index >= 75:
             level = "Stable"
         elif stability_index >= 50:
             level = "Moderate"
         else:
             level = "Unstable"
-        
+
         return {
             "stablecoin": stablecoin.upper(),
             "stability_index": stability_index,
@@ -289,7 +290,7 @@ async def get_market_stability(stablecoin: str):
             "confidence": 0.88,
             "timestamp": datetime.utcnow().isoformat(),
             "model_version": "stability_v1.0",
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -299,7 +300,7 @@ async def get_market_stability(stablecoin: str):
 async def get_systemic_risk():
     """
     Get Systemic Risk Level across the stablecoin ecosystem.
-    
+
     Returns:
     - systemic_risk_level: Low/Medium/High
     - risk_class: 0 (Low), 1 (Medium), 2 (High)
@@ -311,15 +312,11 @@ async def get_systemic_risk():
         return {
             "systemic_risk_level": "Low",
             "risk_class": 0,
-            "probabilities": {
-                "Low": 0.75,
-                "Medium": 0.20,
-                "High": 0.05
-            },
+            "probabilities": {"Low": 0.75, "Medium": 0.20, "High": 0.05},
             "confidence": 0.85,
             "timestamp": datetime.utcnow().isoformat(),
             "model_version": "systemic_risk_v1.0",
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -329,7 +326,7 @@ async def get_systemic_risk():
 async def get_correlation_index():
     """
     Get Correlation Index for cross-stablecoin correlations.
-    
+
     Returns:
     - correlation_index: 0-100 score (higher = more correlated)
     - dominant_factor_strength: Strength of principal component
@@ -345,7 +342,7 @@ async def get_correlation_index():
             "explained_variance_ratios": [0.35, 0.22, 0.15, 0.12, 0.08],
             "timestamp": datetime.utcnow().isoformat(),
             "model_version": "correlation_v1.0",
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -355,7 +352,7 @@ async def get_correlation_index():
 async def get_volatility_score(stablecoin: str):
     """
     Get Volatility Score for a stablecoin.
-    
+
     Returns:
     - volatility_score: 0-100 score (higher = more volatile)
     - volatility_regime: Low/Medium/High
@@ -365,16 +362,17 @@ async def get_volatility_score(stablecoin: str):
         # TODO: Integrate VolatilityScoreModel
         # For now, return mock predictions
         import numpy as np
+
         np.random.seed(hash(stablecoin) % 2**32)
         volatility_score = float(np.random.uniform(5, 35))
-        
+
         if volatility_score < 30:
             regime = "Low"
         elif volatility_score < 70:
             regime = "Medium"
         else:
             regime = "High"
-        
+
         return {
             "stablecoin": stablecoin.upper(),
             "volatility_score": volatility_score,
@@ -382,7 +380,7 @@ async def get_volatility_score(stablecoin: str):
             "historical_volatility": volatility_score / 3000.0,
             "timestamp": datetime.utcnow().isoformat(),
             "model_version": "volatility_v1.0",
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -413,7 +411,12 @@ async def models_status():
         },
         "stability_model": {"type": "LightGBM", "version": "v1.0", "loaded": False, "r2": 0.89},
         "systemic_risk_model": {"type": "XGBoost", "version": "v1.0", "loaded": False, "f1": 0.86},
-        "correlation_model": {"type": "PCA", "version": "v1.0", "loaded": False, "explained_var": 0.78},
+        "correlation_model": {
+            "type": "PCA",
+            "version": "v1.0",
+            "loaded": False,
+            "explained_var": 0.78,
+        },
         "volatility_model": {"type": "Ridge", "version": "v1.0", "loaded": False, "r2": 0.82},
         "timestamp": datetime.utcnow().isoformat(),
     }
