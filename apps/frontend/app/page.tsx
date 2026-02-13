@@ -68,8 +68,8 @@ export default function Home() {
                   {/* Mock KPI cards */}
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { label: 'Total Market Cap', value: '-', trend: '-' },
-                      { label: 'Avg Risk Score', value: '-', trend: '-' },
+                      { label: 'Total Market Cap', value: '$150.2B', trend: '+2.4%' },
+                      { label: 'Avg Risk Score', value: '0.24', trend: '-0.03' },
                     ].map((kpi, i) => (
                       <div key={i} className="bg-gray-50 rounded-lg p-3">
                         <div className="text-xs text-textSecondary mb-1">{kpi.label}</div>
@@ -80,17 +80,25 @@ export default function Home() {
                   </div>
                   {/* Mock chart */}
                   <div className="bg-gray-50 rounded-lg p-4 h-32 flex items-end gap-1">
-                    <div className="flex-1 bg-primary/30 rounded-t" style={{ height: '100%' }} />
+                    {Array.from({ length: 12 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="flex-1 bg-primary/30 rounded-t"
+                        style={{ height: `${Math.random() * 100}%` }}
+                      />
+                    ))}
                   </div>
                   {/* Mock table */}
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2.5">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-primary/20" />
-                        <span className="text-sm font-medium">-</span>
+                    {['USDT', 'USDC', 'DAI'].map((coin, i) => (
+                      <div key={i} className="flex items-center justify-between bg-gray-50 rounded-lg p-2.5">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-primary/20" />
+                          <span className="text-sm font-medium">{coin}</span>
+                        </div>
+                        <div className="text-sm text-success">$1.00</div>
                       </div>
-                      <div className="text-sm text-success">-</div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
