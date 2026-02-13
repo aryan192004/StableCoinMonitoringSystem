@@ -206,7 +206,7 @@ async def stress_test(stablecoin: str, scenario: str = "moderate"):
 async def predict_liquidity(stablecoin: str):
     """
     Predict liquidity for multiple time horizons using LSTM model.
-    
+
     Returns liquidity predictions for:
     - 1 hour
     - 1 day
@@ -218,16 +218,11 @@ async def predict_liquidity(stablecoin: str):
         # For now, return mock predictions
         return {
             "stablecoin": stablecoin.upper(),
-            "predictions": {
-                "1h": 0.85,
-                "1d": 0.82,
-                "1w": 0.78,
-                "1m": 0.75
-            },
+            "predictions": {"1h": 0.85, "1d": 0.82, "1w": 0.78, "1m": 0.75},
             "confidence": 0.87,
             "timestamp": datetime.utcnow().isoformat(),
             "model_version": "liquidity_lstm_v1.0",
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -237,7 +232,7 @@ async def predict_liquidity(stablecoin: str):
 async def detect_anomalies(stablecoin: str):
     """
     Detect market anomalies using Isolation Forest model.
-    
+
     Detects:
     - Sudden liquidity drops
     - Volume spikes
@@ -257,7 +252,7 @@ async def detect_anomalies(stablecoin: str):
             "confidence": 0.92,
             "timestamp": datetime.utcnow().isoformat(),
             "model_version": "anomaly_if_v1.0",
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -267,32 +262,22 @@ async def detect_anomalies(stablecoin: str):
 async def models_status():
     """
     Get status of all ML models.
-    
+
     Returns version, load status, and performance metrics for:
     - XGBoost Risk Model
     - LSTM Liquidity Prediction Model
     - Isolation Forest Anomaly Detection Model
     """
     return {
-        "risk_model": {
-            "type": "XGBoost",
-            "version": "v1.0",
-            "loaded": True,
-            "accuracy": 0.85
-        },
-        "liquidity_model": {
-            "type": "LSTM",
-            "version": "v1.0",
-            "loaded": False,
-            "mae": 0.08
-        },
+        "risk_model": {"type": "XGBoost", "version": "v1.0", "loaded": True, "accuracy": 0.85},
+        "liquidity_model": {"type": "LSTM", "version": "v1.0", "loaded": False, "mae": 0.08},
         "anomaly_model": {
             "type": "Isolation Forest",
             "version": "v1.0",
             "loaded": False,
-            "precision": 0.82
+            "precision": 0.82,
         },
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.utcnow().isoformat(),
     }
 
 

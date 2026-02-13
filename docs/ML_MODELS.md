@@ -13,13 +13,16 @@ The Stablecoin Risk & Liquidity Monitoring System now includes **three machine l
 ## 1. XGBoost Risk Scoring Model
 
 ### Purpose
+
 Predicts the probability of a stablecoin depegging using 7 engineered features.
 
 ### Location
+
 - Implementation: `apps/backend/services/risk_model.py`
 - Trained model: `apps/backend/models/risk_model_v1.pkl`
 
 ### Features (7)
+
 1. **Peg Deviation** - Percentage deviation from $1.00
 2. **Deviation Duration** - Minutes since deviation exceeded 0.5%
 3. **Volatility** - Rolling coefficient of variation (24h)
@@ -29,6 +32,7 @@ Predicts the probability of a stablecoin depegging using 7 engineered features.
 7. **Volume Anomaly Score** - Z-score of current volume
 
 ### Output
+
 ```python
 {
     "risk_score": 72,           # 0-100 integer
@@ -39,12 +43,14 @@ Predicts the probability of a stablecoin depegging using 7 engineered features.
 ```
 
 ### Training
+
 - **Dataset**: 10,000 synthetic samples (15% depeg events)
 - **Validation**: 2,000 samples
 - **Accuracy**: ~85%
 - **Inference Time**: <100ms
 
 ### Usage
+
 ```python
 from services.risk_model import RiskScoringModel
 
@@ -58,14 +64,17 @@ score, level, prob, conf = model.predict_risk(features)
 ## 2. LSTM Liquidity Prediction Model
 
 ### Purpose
+
 Forecasts liquidity depth for multiple time horizons using time series data.
 
 ### Location
+
 - Implementation: `apps/backend/services/liquidity_model.py`
 - Trained model: `apps/backend/models/liquidity_model.pt`
 - Scaler: `apps/backend/models/liquidity_model_scaler.pkl`
 
 ### Features (5)
+
 1. **Liquidity Depth** - Top 10 order book levels
 2. **Order Book Depth** - Top 50 order book levels
 3. **Volume** - Current trading volume
@@ -73,12 +82,14 @@ Forecasts liquidity depth for multiple time horizons using time series data.
 5. **Volatility** - Price volatility
 
 ### Architecture
+
 - **Model**: LSTM (2 layers, 64 hidden units)
 - **Input**: Sequence of 60 timesteps
 - **Output**: 4 predictions (1h, 1d, 1w, 1m)
 - **Framework**: PyTorch
 
 ### Output
+
 ```python
 {
     "predictions": {
@@ -93,6 +104,7 @@ Forecasts liquidity depth for multiple time horizons using time series data.
 ```
 
 ### Training
+
 - **Dataset**: 5,000 synthetic time series samples
 - **Validation**: 1,000 samples
 - **Loss**: MSE (Mean Squared Error)
@@ -100,6 +112,7 @@ Forecasts liquidity depth for multiple time horizons using time series data.
 - **Inference Time**: <500ms
 
 ### Usage
+
 ```python
 from services.liquidity_model import LiquidityPredictionModel
 
@@ -113,14 +126,17 @@ result = model.predict(recent_data)
 ## 3. Isolation Forest Anomaly Detection Model
 
 ### Purpose
+
 Detects abnormal market conditions in real-time using unsupervised learning.
 
 ### Location
+
 - Implementation: `apps/backend/services/anomaly_model.py`
 - Trained model: `apps/backend/models/anomaly_model.pkl`
 - Scaler: `apps/backend/models/anomaly_model_scaler.pkl`
 
 ### Features (8)
+
 1. **Liquidity Depth** - Current liquidity level
 2. **Liquidity Change %** - Percentage change from previous
 3. **Volume Z-Score** - Volume deviation from average
@@ -131,12 +147,14 @@ Detects abnormal market conditions in real-time using unsupervised learning.
 8. **Bid-Ask Spread** - Trading spread
 
 ### Algorithm
+
 - **Model**: Isolation Forest
 - **Contamination**: 0.1 (10% expected anomalies)
 - **Estimators**: 100 trees
 - **Framework**: scikit-learn
 
 ### Output
+
 ```python
 {
     "anomaly_score": -0.65,        # Lower = more anomalous
@@ -160,6 +178,7 @@ Detects abnormal market conditions in real-time using unsupervised learning.
 ```
 
 ### Detected Anomaly Types
+
 - **Liquidity Drop** - Sudden decrease in liquidity
 - **Low Liquidity** - Below critical threshold
 - **Volume Spike** - Abnormal trading volume
@@ -171,6 +190,7 @@ Detects abnormal market conditions in real-time using unsupervised learning.
 - **Spread Widening** - Bid-ask spread increase
 
 ### Training
+
 - **Dataset**: 5,000 "normal" market samples
 - **Approach**: Unsupervised (only normal data)
 - **Validation**: Tested on synthetic anomalous data
@@ -178,6 +198,7 @@ Detects abnormal market conditions in real-time using unsupervised learning.
 - **Inference Time**: <200ms
 
 ### Usage
+
 ```python
 from services.anomaly_model import AnomalyDetectionModel
 
@@ -193,11 +214,13 @@ result = model.detect_anomaly(features)
 ### Express.js (TypeScript) Routes
 
 #### Liquidity Prediction
+
 ```http
 GET /api/liquidity/predict/:stablecoin
 ```
 
 **Response:**
+
 ```json
 {
   "stablecoin": "USDT",
@@ -214,11 +237,13 @@ GET /api/liquidity/predict/:stablecoin
 ```
 
 #### Anomaly Detection
+
 ```http
 GET /api/anomalies/:stablecoin
 ```
 
 **Response:**
+
 ```json
 {
   "stablecoin": "USDT",
@@ -241,21 +266,25 @@ GET /api/anomalies/:stablecoin
 ### FastAPI (Python) Routes
 
 #### Liquidity Prediction
+
 ```http
 GET /liquidity/predict/{stablecoin}
 ```
 
 #### Anomaly Detection
+
 ```http
 GET /anomalies/{stablecoin}
 ```
 
 #### Model Status
+
 ```http
 GET /models/status
 ```
 
 **Response:**
+
 ```json
 {
   "risk_model": {
@@ -326,6 +355,7 @@ pip install -r requirements.txt
 ```
 
 **Key dependencies:**
+
 - `xgboost>=2.0.0` - XGBoost model
 - `torch>=2.1.0` - PyTorch for LSTM
 - `scikit-learn>=1.3.0` - Isolation Forest
@@ -345,10 +375,10 @@ import { useLiquidityPrediction, useAnomalyDetection } from '@/hooks/useData';
 function StablecoinDetail({ id }: { id: string }) {
   // Fetch liquidity predictions
   const { prediction, isLoading: predLoading } = useLiquidityPrediction(id);
-  
+
   // Fetch anomaly detection
   const { anomaly, isLoading: anomLoading } = useAnomalyDetection(id);
-  
+
   return (
     <div>
       <h2>Liquidity Forecast</h2>
@@ -360,7 +390,7 @@ function StablecoinDetail({ id }: { id: string }) {
           <p>1 Month: {prediction.predictions['1m']}</p>
         </div>
       )}
-      
+
       <h2>Anomaly Alerts</h2>
       {anomaly?.is_anomaly && (
         <div className="alert alert-danger">
@@ -383,10 +413,10 @@ All types are defined in `apps/frontend/types/index.ts`:
 interface LiquidityPrediction {
   stablecoin: string;
   predictions: {
-    '1h': number;
-    '1d': number;
-    '1w': number;
-    '1m': number;
+    "1h": number;
+    "1d": number;
+    "1w": number;
+    "1m": number;
   };
   confidence: number;
   timestamp: string;
@@ -396,7 +426,7 @@ interface AnomalyDetection {
   stablecoin: string;
   anomaly_score: number;
   is_anomaly: boolean;
-  severity: 'Normal' | 'Low' | 'Medium' | 'High';
+  severity: "Normal" | "Low" | "Medium" | "High";
   alerts: AnomalyAlert[];
   confidence: number;
   timestamp: string;
@@ -407,11 +437,11 @@ interface AnomalyDetection {
 
 ## Performance Metrics
 
-| Model | Training Time | Inference Time | Accuracy/MAE | Model Size |
-|-------|--------------|----------------|--------------|------------|
-| XGBoost Risk | ~30s | <100ms | 85% | ~500KB |
-| LSTM Liquidity | ~5min | <500ms | MAE: 0.08 | ~2MB |
-| Isolation Forest | ~10s | <200ms | 82% precision | ~300KB |
+| Model            | Training Time | Inference Time | Accuracy/MAE  | Model Size |
+| ---------------- | ------------- | -------------- | ------------- | ---------- |
+| XGBoost Risk     | ~30s          | <100ms         | 85%           | ~500KB     |
+| LSTM Liquidity   | ~5min         | <500ms         | MAE: 0.08     | ~2MB       |
+| Isolation Forest | ~10s          | <200ms         | 82% precision | ~300KB     |
 
 ---
 
@@ -451,22 +481,26 @@ interface AnomalyDetection {
 ### Common Issues
 
 **Issue: PyTorch not installed**
+
 ```bash
 pip install torch>=2.1.0
 ```
 
 **Issue: Model file not found**
+
 ```bash
 # Train models first
 python scripts/train_all_models.py
 ```
 
 **Issue: API endpoint returns 500 error**
+
 - Check if models are loaded in `main.py`
 - Verify model files exist in `models/` directory
 - Check Python dependencies are installed
 
 **Issue: Frontend hook not working**
+
 - Verify API endpoints are accessible
 - Check CORS settings in FastAPI
 - Ensure Express.js routes are registered
@@ -485,6 +519,7 @@ python scripts/train_all_models.py
 ## Contact & Support
 
 For questions or issues:
+
 - Open an issue in the GitHub repository
 - Contact the development team
 - Check the main README.md for general setup instructions

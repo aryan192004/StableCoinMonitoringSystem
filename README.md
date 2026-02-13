@@ -23,7 +23,8 @@ The system includes **three trained ML models**:
 2. **LSTM Liquidity Prediction** - Forecasts liquidity depth for multiple time horizons
 3. **Isolation Forest Anomaly Detection** - Detects market anomalies and crisis conditions
 
-📚 **Documentation**: 
+📚 **Documentation**:
+
 - [ML Models Guide](docs/ML_MODELS.md) - Comprehensive model documentation
 - [Quick Start](docs/ML_QUICKSTART.md) - Get started with ML models in 5 minutes
 

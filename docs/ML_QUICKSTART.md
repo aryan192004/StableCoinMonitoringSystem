@@ -17,6 +17,7 @@ pip install -r requirements.txt
 ```
 
 **Key packages installed:**
+
 - `torch` - PyTorch for LSTM
 - `scikit-learn` - Isolation Forest
 - `xgboost` - Risk scoring
@@ -35,12 +36,14 @@ cd apps/backend
 ```
 
 This will:
+
 1. Check Python dependencies
 2. Install missing packages
 3. Train all three models
 4. Save models to `apps/backend/models/`
 
 **Expected output:**
+
 ```
 ================================
 ML Models Training Script
@@ -96,6 +99,7 @@ Get-ChildItem apps/backend/models/
 ```
 
 **Expected files:**
+
 ```
 risk_model_v1.pkl           (~500 KB)
 liquidity_model.pt          (~2 MB)
@@ -149,6 +153,7 @@ Invoke-WebRequest http://localhost:8001/models/status -UseBasicParsing | Select-
 ```
 
 **Expected Response (Liquidity Prediction):**
+
 ```json
 {
   "stablecoin": "USDT",
@@ -178,7 +183,7 @@ import { useLiquidityPrediction, useAnomalyDetection } from '@/hooks/useData';
 function MyComponent() {
   const { prediction } = useLiquidityPrediction('USDT');
   const { anomaly } = useAnomalyDetection('USDT');
-  
+
   return (
     <div>
       {prediction && (
@@ -188,7 +193,7 @@ function MyComponent() {
           <p>1 Day: {prediction.predictions['1d']}</p>
         </div>
       )}
-      
+
       {anomaly?.is_anomaly && (
         <div className="alert alert-danger">
           <h3>⚠️ Anomaly Detected</h3>
@@ -287,12 +292,14 @@ cd apps/backend
 ### Issue: "API returns 500 error"
 
 1. Check if Python service is running:
+
    ```powershell
    # Check if port 8001 is in use
    netstat -ano | findstr :8001
    ```
 
 2. Check model files exist:
+
    ```powershell
    Get-ChildItem apps/backend/models/
    ```
@@ -302,6 +309,7 @@ cd apps/backend
 ### Issue: "Frontend hook returns undefined"
 
 1. Verify API endpoints:
+
    ```powershell
    Invoke-WebRequest http://localhost:8001/liquidity/predict/USDT
    ```
@@ -331,6 +339,7 @@ cd apps/backend
 ---
 
 **Quick Help:**
+
 - Models not training? Check Python version (requires 3.8+)
 - API not responding? Ensure FastAPI is running on port 8001
 - Frontend errors? Check that Express.js backend is running

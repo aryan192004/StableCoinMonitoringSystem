@@ -30,21 +30,18 @@ class LiquidityFeatures:
     """
     Container for liquidity prediction features
     """
+
     liquidity_depth: float
     order_book_depth: float
     volume: float
     spread: float
     volatility: float
-    
+
     def to_array(self) -> np.ndarray:
         """Convert to numpy array for LSTM model input"""
-        return np.array([
-            self.liquidity_depth,
-            self.order_book_depth,
-            self.volume,
-            self.spread,
-            self.volatility
-        ])
+        return np.array(
+            [self.liquidity_depth, self.order_book_depth, self.volume, self.spread, self.volatility]
+        )
 
 
 @dataclass
@@ -52,6 +49,7 @@ class AnomalyFeatures:
     """
     Container for anomaly detection features
     """
+
     liquidity_depth: float
     liquidity_change_pct: float
     volume_zscore: float
@@ -60,19 +58,21 @@ class AnomalyFeatures:
     cross_exchange_spread: float
     volatility_spike: float
     bid_ask_spread: float
-    
+
     def to_array(self) -> np.ndarray:
         """Convert to numpy array for anomaly model input"""
-        return np.array([
-            self.liquidity_depth,
-            self.liquidity_change_pct,
-            self.volume_zscore,
-            self.price_change_pct,
-            self.orderbook_imbalance,
-            self.cross_exchange_spread,
-            self.volatility_spike,
-            self.bid_ask_spread
-        ])
+        return np.array(
+            [
+                self.liquidity_depth,
+                self.liquidity_change_pct,
+                self.volume_zscore,
+                self.price_change_pct,
+                self.orderbook_imbalance,
+                self.cross_exchange_spread,
+                self.volatility_spike,
+                self.bid_ask_spread,
+            ]
+        )
 
     def to_array(self) -> np.ndarray:
         """Convert to numpy array for ML model input"""
@@ -387,81 +387,81 @@ class FeatureEngineer:
         z_score = (current_volume - mean_volume) / std_volume
 
         return round(z_score, 4)
-    
+
     def compute_liquidity_features(
         self,
         orderbook: Dict[str, Any],
         ohlcv_history: List[Dict[str, Any]],
         multi_exchange_prices: Dict[str, Dict[str, Any]],
-        stablecoin: str
+        stablecoin: str,
     ) -> LiquidityFeatures:
         """
         Compute features for liquidity prediction model
-        
+
         Args:
             orderbook: Order book data
             ohlcv_history: Historical OHLCV data
             multi_exchange_prices: Prices across exchanges
             stablecoin: Stablecoin identifier
-        
+
         Returns:
             LiquidityFeatures object
         """
         # Liquidity depth (top 10 levels)
         liquidity_depth = self.calculate_liquidity_score(orderbook)
-        
+
         # Order book cumulative depth (top 50 levels)
         order_book_depth = self.calculate_liquidity_score(orderbook, depth_levels=50)
-        
+
         # Current volume
         volume = 0.0
         if ohlcv_history and len(ohlcv_history) > 0:
-            recent_volumes = [c.get('volume_traded', 0) for c in ohlcv_history[-60:]]
+            recent_volumes = [c.get("volume_traded", 0) for c in ohlcv_history[-60:]]
             volume = np.mean(recent_volumes) if recent_volumes else 0.0
-        
+
         # Spread
         spread = self.calculate_cross_exchange_spread(multi_exchange_prices)
-        
+
         # Volatility
         volatility = self.calculate_volatility(ohlcv_history)
-        
+
         # Store historical liquidity for rolling calculations
         if stablecoin not in self.historical_liquidity:
             self.historical_liquidity[stablecoin] = deque(maxlen=1000)
         self.historical_liquidity[stablecoin].append(liquidity_depth)
-        
+
         return LiquidityFeatures(
             liquidity_depth=liquidity_depth,
             order_book_depth=order_book_depth,
             volume=volume,
             spread=spread,
-            volatility=volatility
+            volatility=volatility,
         )
-    
+
     def compute_anomaly_features(
         self,
         current_price: float,
         orderbook: Dict[str, Any],
         ohlcv_history: List[Dict[str, Any]],
         multi_exchange_prices: Dict[str, Dict[str, Any]],
-        stablecoin: str
+        stablecoin: str,
     ) -> AnomalyFeatures:
         """
         Compute features for anomaly detection model
-        
+
         Args:
             current_price: Current price
             orderbook: Order book data
             ohlcv_history: Historical OHLCV data
             multi_exchange_prices: Prices across exchanges
             stablecoin: Stablecoin identifier
-        
+
         Returns:
             AnomalyFeatures object
         """
         # Liquidity depth
         liquidity_depth = self.calculate_liquidity_score(orderbook)
-        
+
         # Liquidity change percentage
         liquidity_change_pct = 0.0
         if stablecoin in self.previous_liquidity:
@@ -469,10 +469,10 @@ class FeatureEngineer:
             if prev > 0:
                 liquidity_change_pct = (liquidity_depth - prev) / prev
         self.previous_liquidity[stablecoin] = liquidity_depth
-        
+
         # Volume z-score
         volume_zscore = self.calculate_volume_anomaly(ohlcv_history, stablecoin)
-        
+
         # Price change percentage
         price_change_pct = 0.0
         if stablecoin in self.previous_price:
@@ -480,19 +480,19 @@ class FeatureEngineer:
             if prev_price > 0:
                 price_change_pct = (current_price - prev_price) / prev_price
         self.previous_price[stablecoin] = current_price
-        
+
         # Order book imbalance
         orderbook_imbalance = self.calculate_orderbook_imbalance(orderbook)
-        
+
         # Cross-exchange spread
         cross_exchange_spread = self.calculate_cross_exchange_spread(multi_exchange_prices)
-        
+
         # Volatility spike
         volatility_spike = self.calculate_volatility(ohlcv_history)
-        
+
         # Bid-ask spread
         bid_ask_spread = self.calculate_bid_ask_spread(orderbook)
-        
+
         return AnomalyFeatures(
             liquidity_depth=liquidity_depth,
             liquidity_change_pct=liquidity_change_pct,
@@ -501,54 +501,50 @@ class FeatureEngineer:
             orderbook_imbalance=orderbook_imbalance,
             cross_exchange_spread=cross_exchange_spread,
             volatility_spike=volatility_spike,
-            bid_ask_spread=bid_ask_spread
+            bid_ask_spread=bid_ask_spread,
         )
-    
+
     def calculate_bid_ask_spread(self, orderbook: Dict[str, Any]) -> float:
         """
         Calculate bid-ask spread from order book
-        
+
         Formula: (best_ask - best_bid) / mid_price * 100
-        
+
         Returns: Spread percentage
         """
         bids = orderbook.get("bids", [])
         asks = orderbook.get("asks", [])
-        
+
         if not bids or not asks:
             return 0.0
-        
+
         best_bid = bids[0].get("price", 0.0) if bids else 0.0
         best_ask = asks[0].get("price", 0.0) if asks else 0.0
-        
+
         if best_bid == 0 or best_ask == 0:
             return 0.0
-        
+
         mid_price = (best_bid + best_ask) / 2
         spread = (best_ask - best_bid) / mid_price
-        
+
         return round(spread, 6)
-    
-    def get_liquidity_time_series(
-        self,
-        stablecoin: str,
-        length: int = 60
-    ) -> np.ndarray:
+
+    def get_liquidity_time_series(self, stablecoin: str, length: int = 60) -> np.ndarray:
         """
         Get historical liquidity time series for LSTM input
-        
+
         Args:
             stablecoin: Stablecoin identifier
             length: Number of timesteps to retrieve
-        
+
         Returns:
             Array of shape (length, n_features) or empty array
         """
         if stablecoin not in self.historical_liquidity:
             return np.array([])
-        
+
         history = list(self.historical_liquidity[stablecoin])
-        
+
         if len(history) < length:
             # Pad with first value if insufficient data
             if len(history) > 0:
@@ -558,7 +554,7 @@ class FeatureEngineer:
                 return np.array([])
         else:
             history = history[-length:]
-        
+
         # For now, return just liquidity depth
         # In production, would include all 5 liquidity features
         return np.array(history).reshape(-1, 1)
