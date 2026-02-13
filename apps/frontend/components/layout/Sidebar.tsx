@@ -12,6 +12,8 @@ import {
   ChartBarIcon,
   NewspaperIcon,
   BeakerIcon,
+  BriefcaseIcon,
+
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -25,6 +27,7 @@ const navigation = [
   { name: 'Alerts', href: '/dashboard/alerts', icon: BellIcon },
   { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBarIcon },
   { name: 'Market Updates', href: '/dashboard/updates', icon: NewspaperIcon },
+  { name: 'My Portfolio', href: '/dashboard/portfolio', icon: BriefcaseIcon },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ className }) => {

@@ -167,36 +167,7 @@ export default function AnalyticsPage() {
 
         {/* Risk Breakdown */}
         <div className="grid lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Risk Categories</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <div className="space-y-4">
-                {[
-                  { category: 'Collateral Risk', score: 0.21, color: 'success' },
-                  { category: 'Liquidity Risk', score: 0.34, color: 'warning' },
-                  { category: 'Regulatory Risk', score: 0.42, color: 'warning' },
-                  { category: 'Smart Contract Risk', score: 0.18, color: 'success' },
-                ].map((risk, i) => (
-                  <div key={i}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-textSecondary">{risk.category}</span>
-                      <span className={`text-sm font-semibold text-${risk.color}`}>
-                        {risk.score.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full bg-${risk.color} transition-all`}
-                        style={{ width: `${risk.score * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
+          
 
           <Card>
             <CardHeader>
@@ -219,28 +190,7 @@ export default function AnalyticsPage() {
             </CardBody>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Stability Metrics</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <div className="space-y-4">
-                {[
-                  { metric: 'Avg Peg Deviation', value: '0.08%', good: true },
-                  { metric: 'Max Deviation (24h)', value: '0.32%', good: true },
-                  { metric: 'Recovery Time', value: '4.2min', good: true },
-                  { metric: 'Volatility Index', value: '0.12', good: true },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-textSecondary">{item.metric}</span>
-                    <span className={`text-sm font-semibold ${item.good ? 'text-success' : 'text-danger'}`}>
-                      {item.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
+          
         </div>
       </div>
     </DashboardLayout>
