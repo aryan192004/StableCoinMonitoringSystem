@@ -1,0 +1,6 @@
+{
+  "watch": ["api", "services"],
+  "ext": "ts,js,json",
+  "ignore": ["**/__pycache__/**", "**/*.pyc", "**/*.pyo"],
+  "exec": "powershell -Command \"$port=8000; $pids=(Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique); if ($pids) { $pids | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 2; Write-Host 'Port 8000 cleared' } ; ts-node api/server.ts\""
+}

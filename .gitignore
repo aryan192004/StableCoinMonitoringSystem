@@ -28,7 +28,6 @@ out/
 *.egg-info/
 
 # Environment variables
-.env
 .env*.local
 .env.production
 
