@@ -457,6 +457,10 @@ pnpm build            # Production build
 pnpm lint             # Lint frontend code
 ```
 
+for icons 
+pnpm add @heroicons/react --filter frontend
+
+
 ## 📈 Risk Level Thresholds
 
 - 🟢 **LOW** (0-30): Normal operation, minimal monitoring
