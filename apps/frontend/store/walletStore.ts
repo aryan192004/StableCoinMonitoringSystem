@@ -33,7 +33,6 @@ export const useWalletStore = create<WalletStore>()(
         }
 
         const address = accounts[0];
-        const signer = await provider.getSigner();
         
         // Get network info
         const network = await provider.getNetwork();
