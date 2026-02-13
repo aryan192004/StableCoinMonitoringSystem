@@ -1,5 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { PriceDataPoint } from '@stablecoin/types';
+import * as priceService from '../services/priceService';
+import * as exchangeService from '../services/exchangeService';
 
 const router = Router();
 
@@ -9,31 +11,28 @@ const router = Router();
  */
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // TODO: Implement actual data fetching logic
-    const stablecoins = [
-      {
-        id: 'usdt',
-        name: 'Tether',
-        symbol: 'USDT',
-        price: 1.0001,
-        pegDeviation: 0.01,
-        volume24h: 45000000000,
-        marketCap: 95000000000,
-        riskScore: 0.15,
-        lastUpdated: new Date(),
-      },
-      {
-        id: 'usdc',
-        name: 'USD Coin',
-        symbol: 'USDC',
-        price: 0.9998,
-        pegDeviation: -0.02,
-        volume24h: 8000000000,
-        marketCap: 25000000000,
-        riskScore: 0.10,
-        lastUpdated: new Date(),
-      },
-    ];
+    const symbols = ['usdt', 'usdc', 'dai', 'busd', 'frax', 'tusd'];
+    const pricesData = await priceService.getMultiplePrices(symbols);
+
+    const stablecoins = Object.keys(pricesData).map((symbol) => {
+      const data = pricesData[symbol];
+      const pegDeviation = ((data.current - 1.0) / 1.0) * 100;
+      
+      // Simple risk score based on peg deviation and volume
+      const riskScore = Math.min(1.0, Math.abs(pegDeviation) * 0.1);
+
+      return {
+        id: symbol,
+        name: getStablecoinName(symbol),
+        symbol: symbol.toUpperCase(),
+        price: data.current,
+        pegDeviation,
+        volume24h: data.volume24h,
+        marketCap: data.marketCap,
+        riskScore,
+        lastUpdated: data.lastUpdated,
+      };
+    });
 
     res.json(stablecoins);
   } catch (error) {
@@ -49,17 +48,21 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     
-    // TODO: Implement actual data fetching logic
+    const priceData = await priceService.getCurrentPrice(id);
+    const pegDeviation = ((priceData.current - 1.0) / 1.0) * 100;
+    const riskScore = Math.min(1.0, Math.abs(pegDeviation) * 0.1);
+
     const stablecoin = {
       id,
-      name: 'Tether',
-      symbol: 'USDT',
-      price: 1.0001,
-      pegDeviation: 0.01,
-      volume24h: 45000000000,
-      marketCap: 95000000000,
-      riskScore: 0.15,
-      lastUpdated: new Date(),
+      name: getStablecoinName(id),
+      symbol: id.toUpperCase(),
+      price: priceData.current,
+      pegDeviation,
+      volume24h: priceData.volume24h,
+      marketCap: priceData.marketCap,
+      change24h: priceData.change24h,
+      riskScore,
+      lastUpdated: priceData.lastUpdated,
     };
 
     res.json(stablecoin);
@@ -75,12 +78,21 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 router.get('/:id/peg-history', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { period = '24h' } = req.query;
+    const { period = '30' } = req.query;
 
-    // TODO: Implement actual data fetching logic
-    const history: PriceDataPoint[] = [];
+    // Convert period to days
+    const days = parseInt(period as string, 10) || 30;
+    
+    const historicalData = await priceService.getHistoricalPrices(id, days);
+    const pegMetrics = priceService.calculatePegMetrics(historicalData);
 
-    res.json({ id, period, data: history });
+    res.json({
+      id,
+      period: `${days}d`,
+      data: historicalData,
+      metrics: pegMetrics,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     next(error);
   }
@@ -94,16 +106,33 @@ router.get('/:id/liquidity', async (req: Request, res: Response, next: NextFunct
   try {
     const { id } = req.params;
 
-    // TODO: Implement actual data fetching logic
+    const exchangeData = await exchangeService.getExchangeData(id);
+    const liquidityHealth = exchangeService.calculateLiquidityHealth(
+      exchangeData.liquidity
+    );
+
     const liquidity = {
       exchanges: [
         {
           name: 'Binance',
-          orderBookDepth: { bids: 5000000, asks: 5100000 },
-          bidAskSpread: 0.0001,
+          pair: exchangeData.symbol,
+          orderBookDepth: {
+            bids: exchangeData.liquidity.bidLiquidity,
+            asks: exchangeData.liquidity.askLiquidity,
+          },
+          bidAskSpread: exchangeData.liquidity.bidAskSpread,
+          spreadPercent: exchangeData.liquidity.spreadPercent,
+          topBid: exchangeData.orderbook.topBid,
+          topAsk: exchangeData.orderbook.topAsk,
         },
       ],
-      dexPools: [],
+      totalLiquidity: exchangeData.liquidity.totalLiquidity,
+      depth1Percent: exchangeData.liquidity.depth1Percent,
+      depth5Percent: exchangeData.liquidity.depth5Percent,
+      marketQuality: exchangeData.liquidity.marketQuality,
+      liquidityHealth,
+      stats: exchangeData.stats,
+      timestamp: exchangeData.timestamp,
     };
 
     res.json({ id, liquidity });
@@ -190,5 +219,22 @@ router.get('/anomalies/:stablecoin', async (req: Request, res: Response, next: N
     next(error);
   }
 });
+
+/**
+ * Helper function to get stablecoin full name
+ */
+function getStablecoinName(symbol: string): string {
+  const names: Record<string, string> = {
+    usdt: 'Tether',
+    usdc: 'USD Coin',
+    dai: 'Dai',
+    busd: 'Binance USD',
+    frax: 'Frax',
+    tusd: 'TrueUSD',
+    usdd: 'USDD',
+    gusd: 'Gemini Dollar',
+  };
+  return names[symbol.toLowerCase()] || symbol.toUpperCase();
+}
 
 export default router;
