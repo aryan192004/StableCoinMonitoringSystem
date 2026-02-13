@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout';
 import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui';
+import { generateLiquidityReport } from '@/utils/pdfReportGenerator';
 
 // Base order book data for different coin/exchange combinations
 const baseOrderBookData: Record<string, Record<string, { bids: Array<{ price: number; cumulative: number }>, asks: Array<{ price: number; cumulative: number }> }>> = {
@@ -505,6 +507,33 @@ export default function LiquidityPage() {
     return `$${val.toFixed(1)}K`;
   };
 
+  // Handler for Download Report button
+  const handleDownloadReport = () => {
+    // Gather DEX pools data
+    const dexPools = [
+      { pool: 'USDC/ETH', dex: 'Uniswap V3', tvl: '$524M', volume24h: '$142M', apy: '12.4%' },
+      { pool: 'DAI/USDC', dex: 'Curve', tvl: '$312M', volume24h: '$84M', apy: '8.2%' },
+      { pool: 'USDT/USDC', dex: 'Uniswap V2', tvl: '$218M', volume24h: '$56M', apy: '6.8%' },
+    ];
+
+    // Generate the PDF report
+    generateLiquidityReport({
+      selectedCoin,
+      selectedExchange,
+      exchanges,
+      bidDepth,
+      askDepth,
+      dexPools,
+      timestamp: new Date(),
+    });
+  };
+
+  // Handler for Configure Alerts - navigate to alerts page
+  const router = useRouter();
+  const handleConfigureAlerts = () => {
+    router.push('/dashboard/alerts');
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -515,8 +544,8 @@ export default function LiquidityPage() {
             <p className="text-textSecondary">Real-time order book depth across exchanges</p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline">Download Report</Button>
-            <Button variant="primary">Configure Alerts</Button>
+            <Button variant="outline" onClick={handleDownloadReport}>Download Report</Button>
+            <Button variant="primary" onClick={handleConfigureAlerts}>Configure Alerts</Button>
           </div>
         </div>
 
