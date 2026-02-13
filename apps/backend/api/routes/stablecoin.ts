@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { PriceDataPoint } from '@stablecoin/types/src/index';
+import { PriceDataPoint } from '@stablecoin/types';
 import * as priceService from '../services/priceService';
 import * as exchangeService from '../services/exchangeService';
 

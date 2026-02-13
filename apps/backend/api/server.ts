@@ -11,6 +11,7 @@ import alertRoutes from './routes/alert';
 import healthRoutes from './routes/health';
 import riskRoutes from './routes/risk';
 import anomaliesRoutes from './routes/anomalies';
+import portfolioRoutes from './routes/portfolio';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use('/api/stablecoins', stablecoinRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/risk', riskRoutes);
 app.use('/api/anomalies', anomaliesRoutes);
+app.use('/api/portfolio', portfolioRoutes);
 
 // Root endpoint
 app.get('/', (req: Request, res: Response) => {

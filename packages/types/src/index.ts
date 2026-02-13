@@ -150,3 +150,66 @@ export interface PaginatedResponse<T> {
   data: T[];
   meta: PaginationMeta;
 }
+
+/**
+ * Wallet Connection Types
+ */
+export interface WalletState {
+  isConnected: boolean;
+  address: string | null;
+  balance: string | null;
+  chainId: number | null;
+  isConnecting: boolean;
+  error: string | null;
+}
+
+export interface WalletActions {
+  connect: () => Promise<void>;
+  disconnect: () => void;
+  switchNetwork: (chainId: number) => Promise<void>;
+}
+
+/**
+ * Token and Portfolio Types
+ */
+export interface TokenBalance {
+  tokenAddress: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  balance: string;
+  formattedBalance: string;
+  priceUsd?: number;
+  valueUsd?: number;
+  logoUrl?: string;
+  isStablecoin?: boolean;
+}
+
+export interface PortfolioSummary {
+  totalValueUsd: number;
+  ethBalance: TokenBalance;
+  tokenBalances: TokenBalance[];
+  allocations: TokenAllocation[];
+  stablecoinExposure: number;
+  riskScore: number;
+  lastUpdated: Date;
+}
+
+export interface TokenAllocation {
+  symbol: string;
+  percentage: number;
+  valueUsd: number;
+  color: string;
+}
+
+export interface PortfolioRiskMetrics {
+  overallScore: number;
+  riskLevel: 'low' | 'medium' | 'high';
+  factors: {
+    diversification: number;
+    stablecoinConcentration: number;
+    volatility: number;
+    liquidityRisk: number;
+  };
+  recommendations: string[];
+}
