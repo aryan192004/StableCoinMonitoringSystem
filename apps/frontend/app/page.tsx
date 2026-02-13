@@ -1,5 +1,17 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui';
+import { 
+  ChartBarIcon, 
+  ShieldCheckIcon, 
+  ExclamationTriangleIcon, 
+  FireIcon,
+  LightBulbIcon,
+  CurrencyDollarIcon,
+  ClockIcon,
+  CubeIcon,
+  RocketLaunchIcon,
+  ArrowTrendingUpIcon
+} from '@heroicons/react/24/outline';
 
 export default function Home() {
   return (
@@ -13,6 +25,7 @@ export default function Home() {
             <div className="space-y-8 animate-fade-in">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <ChartBarIcon className="w-4 h-4" />
                 Real-time monitoring
               </div>
               <h1 className="text-5xl font-bold text-textPrimary leading-tight">
@@ -39,17 +52,26 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-8 pt-4">
                 <div>
-                  <div className="text-3xl font-bold text-textPrimary">$150B+</div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <CurrencyDollarIcon className="w-8 h-8 text-primary" />
+                    <div className="text-3xl font-bold text-textPrimary">$150B+</div>
+                  </div>
                   <div className="text-sm text-textSecondary">Total Value Monitored</div>
                 </div>
                 <div className="h-12 w-px bg-border" />
                 <div>
-                  <div className="text-3xl font-bold text-textPrimary">24/7</div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <ClockIcon className="w-8 h-8 text-primary" />
+                    <div className="text-3xl font-bold text-textPrimary">24/7</div>
+                  </div>
                   <div className="text-sm text-textSecondary">Real-time Tracking</div>
                 </div>
                 <div className="h-12 w-px bg-border" />
                 <div>
-                  <div className="text-3xl font-bold text-textPrimary">15+</div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <CubeIcon className="w-8 h-8 text-primary" />
+                    <div className="text-3xl font-bold text-textPrimary">15+</div>
+                  </div>
                   <div className="text-sm text-textSecondary">Stablecoins Covered</div>
                 </div>
               </div>
@@ -112,13 +134,15 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-textPrimary mb-8">Professional Risk Signals</h2>
         <div className="grid md:grid-cols-4 gap-6">
           {[
-            { color: 'bg-success', label: 'Stable', desc: 'Low risk indicators' },
-            { color: 'bg-warning', label: 'Watch', desc: 'Elevated monitoring' },
-            { color: 'bg-danger', label: 'High Risk', desc: 'Critical attention' },
-            { color: 'bg-primary', label: 'Insight', desc: 'Key metrics' },
+            { color: 'bg-success', label: 'Stable', desc: 'Low risk indicators', icon: ShieldCheckIcon },
+            { color: 'bg-warning', label: 'Watch', desc: 'Elevated monitoring', icon: ExclamationTriangleIcon },
+            { color: 'bg-danger', label: 'High Risk', desc: 'Critical attention', icon: FireIcon },
+            { color: 'bg-primary', label: 'Insight', desc: 'Key metrics', icon: LightBulbIcon },
           ].map((item, i) => (
             <div key={i} className="bg-surface rounded-xl2 shadow-card p-6 hover:shadow-cardHover transition-shadow">
-              <div className={`w-12 h-12 ${item.color} rounded-lg mb-4`} />
+              <div className={`w-12 h-12 ${item.color} rounded-lg mb-4 flex items-center justify-center`}>
+                <item.icon className="w-7 h-7 text-white" />
+              </div>
               <h3 className="text-lg font-semibold text-textPrimary mb-2">{item.label}</h3>
               <p className="text-sm text-textSecondary">{item.desc}</p>
             </div>
@@ -171,11 +195,13 @@ export default function Home() {
           <div className="flex items-center justify-center gap-4">
             <Link href="/dashboard">
               <Button variant="secondary" size="lg">
+                <RocketLaunchIcon className="w-5 h-5 mr-2 inline" />
                 View Live Dashboard
               </Button>
             </Link>
             <Link href="/contact-sales">
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              <ArrowTrendingUpIcon className="w-5 h-5 mr-2 inline" />
               Contact Sales
             </Button>
             </Link>

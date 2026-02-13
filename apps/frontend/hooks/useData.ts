@@ -129,3 +129,66 @@ export function useAnomalyDetection(stablecoin: string, refreshInterval: number 
     refresh: mutate,
   };
 }
+
+/**
+ * Hook to fetch peg history for a stablecoin
+ */
+export function usePegHistory(id: string, period: string = '7d', refreshInterval: number = 60000) {
+  const { data, error, mutate } = useSWR<{ id: string; period: string; data: any[] }>(
+    id ? `/stablecoins/${id}/peg-history?period=${period}` : null,
+    fetcher,
+    { 
+      refreshInterval,
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    history: data?.data || [],
+    isLoading: !error && !data,
+    isError: error,
+    refresh: mutate,
+  };
+}
+
+/**
+ * Hook to fetch liquidity data for a stablecoin
+ */
+export function useLiquidityData(id: string, refreshInterval: number = 30000) {
+  const { data, error, mutate } = useSWR<any>(
+    id ? `/stablecoins/${id}/liquidity` : null,
+    fetcher,
+    { 
+      refreshInterval,
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    liquidity: data?.liquidity,
+    isLoading: !error && !data,
+    isError: error,
+    refresh: mutate,
+  };
+}
+
+/**
+ * Hook to fetch reserve data for a stablecoin
+ */
+export function useReserveData(id: string, refreshInterval: number = 300000) {
+  const { data, error, mutate } = useSWR<any>(
+    id ? `/stablecoins/${id}/reserves` : null,
+    fetcher,
+    { 
+      refreshInterval,
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    reserves: data?.reserves,
+    isLoading: !error && !data,
+    isError: error,
+    refresh: mutate,
+  };
+}
