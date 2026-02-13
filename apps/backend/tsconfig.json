@@ -19,7 +19,10 @@
       "@/*": ["./*"],
       "@/api/*": ["./api/*"],
       "@/services/*": ["./services/*"],
-      "@/shared/*": ["./shared/*"]
+      "@/shared/*": ["./shared/*"],
+      "@stablecoin/types": ["../../packages/types/src"],
+      "@stablecoin/config": ["../../packages/config/src"],
+      "@stablecoin/utils": ["../../packages/utils/src"]
     }
   },
   "include": ["api/**/*", "shared/**/*"],

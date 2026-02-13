@@ -1,6 +1,9 @@
-import mongoose, { Document, Schema } from 'mongoose';
+// In-memory Alert model (replaces Mongoose)
+import { randomUUID } from 'crypto';
 
-export interface IAlert extends Document {
+export interface IAlert {
+  _id: string;
+  id: string;
   stablecoinId: string;
   name: string;
   type: 'peg_deviation' | 'liquidity_drop' | 'volume_spike' | 'market_cap_change' | 'reserve_change';
@@ -13,57 +16,76 @@ export interface IAlert extends Document {
   triggerCount: number;
 }
 
-const AlertSchema = new Schema<IAlert>({
-  stablecoinId: {
-    type: String,
-    required: true,
-    trim: true,
+// In-memory storage with some seed data
+const alerts: IAlert[] = [
+  {
+    _id: '1',
+    id: '1',
+    stablecoinId: 'usdt',
+    name: 'USDT Peg Alert',
+    type: 'peg_deviation',
+    condition: 'above',
+    threshold: 0.5,
+    channels: ['email'],
+    enabled: true,
+    createdAt: new Date('2026-01-10'),
+    triggerCount: 3,
   },
-  name: {
-    type: String,
-    required: true,
-    trim: true,
+  {
+    _id: '2',
+    id: '2',
+    stablecoinId: 'usdc',
+    name: 'USDC Liquidity Drop',
+    type: 'liquidity_drop',
+    condition: 'below',
+    threshold: 1000000,
+    channels: ['email', 'telegram'],
+    enabled: true,
+    createdAt: new Date('2026-01-15'),
+    triggerCount: 1,
   },
-  type: {
-    type: String,
-    required: true,
-    enum: ['peg_deviation', 'liquidity_drop', 'volume_spike', 'market_cap_change', 'reserve_change'],
-  },
-  condition: {
-    type: String,
-    required: true,
-    enum: ['above', 'below', 'equals'],
-  },
-  threshold: {
-    type: Number,
-    required: true,
-  },
-  channels: {
-    type: [String],
-    required: true,
-    enum: ['email', 'telegram', 'push', 'webhook'],
-    default: ['email'],
-  },
-  enabled: {
-    type: Boolean,
-    default: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  lastTriggered: {
-    type: Date,
-    default: null,
-  },
-  triggerCount: {
-    type: Number,
-    default: 0,
-  },
-});
+];
 
-// Indexes for efficient queries
-AlertSchema.index({ stablecoinId: 1, enabled: 1 });
-AlertSchema.index({ createdAt: -1 });
+export class AlertStore {
+  static findAll(filter?: { stablecoinId?: string; enabled?: boolean }): IAlert[] {
+    let result = [...alerts];
+    if (filter?.stablecoinId) {
+      result = result.filter(a => a.stablecoinId === filter.stablecoinId);
+    }
+    if (filter?.enabled !== undefined) {
+      result = result.filter(a => a.enabled === filter.enabled);
+    }
+    return result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
 
-export const AlertModel = mongoose.model<IAlert>('Alert', AlertSchema);
+  static findById(id: string): IAlert | undefined {
+    return alerts.find(a => a._id === id || a.id === id);
+  }
+
+  static create(data: Omit<IAlert, '_id' | 'id' | 'createdAt' | 'triggerCount'>): IAlert {
+    const id = randomUUID();
+    const alert: IAlert = {
+      _id: id,
+      id,
+      ...data,
+      createdAt: new Date(),
+      triggerCount: 0,
+    };
+    alerts.push(alert);
+    return alert;
+  }
+
+  static update(id: string, updates: Partial<IAlert>): IAlert | null {
+    const index = alerts.findIndex(a => a._id === id || a.id === id);
+    if (index === -1) return null;
+    alerts[index] = { ...alerts[index], ...updates };
+    return alerts[index];
+  }
+
+  static delete(id: string): boolean {
+    const index = alerts.findIndex(a => a._id === id || a.id === id);
+    if (index === -1) return false;
+    alerts.splice(index, 1);
+    return true;
+  }
+}

@@ -1,4 +1,4 @@
-import { AlertModel, IAlert } from '../models/alert';
+import { AlertStore, IAlert } from '../models/alert';
 
 export interface CreateAlertPayload {
   stablecoinId: string;
@@ -15,17 +15,15 @@ export class AlertService {
    * Create a new alert
    */
   static async createAlert(payload: CreateAlertPayload): Promise<IAlert> {
-    // Validate required fields
     if (!payload.stablecoinId || !payload.name || !payload.type || !payload.condition || payload.threshold == null) {
       throw new Error('Missing required fields: stablecoinId, name, type, condition, threshold');
     }
 
-    // Validate threshold is a number
     if (typeof payload.threshold !== 'number' || isNaN(payload.threshold)) {
       throw new Error('Threshold must be a valid number');
     }
 
-    const alert = new AlertModel({
+    return AlertStore.create({
       stablecoinId: payload.stablecoinId,
       name: payload.name,
       type: payload.type,
@@ -33,55 +31,41 @@ export class AlertService {
       threshold: payload.threshold,
       channels: payload.channels || ['email'],
       enabled: payload.enabled !== undefined ? payload.enabled : true,
-      triggerCount: 0,
     });
-
-    return await alert.save();
   }
 
   /**
    * List alerts with optional filters
    */
   static async listAlerts(filter?: { stablecoinId?: string; enabled?: boolean }): Promise<IAlert[]> {
-    const query: any = {};
-    
-    if (filter?.stablecoinId) {
-      query.stablecoinId = filter.stablecoinId;
-    }
-    
-    if (filter?.enabled !== undefined) {
-      query.enabled = filter.enabled;
-    }
-
-    return await AlertModel.find(query).sort({ createdAt: -1 }).exec();
+    return AlertStore.findAll(filter);
   }
 
   /**
    * Get alert by ID
    */
-  static async getAlertById(id: string): Promise<IAlert | null> {
-    return await AlertModel.findById(id).exec();
+  static async getAlertById(id: string): Promise<IAlert | undefined> {
+    return AlertStore.findById(id);
   }
 
   /**
    * Update alert
    */
   static async updateAlert(id: string, updates: Partial<CreateAlertPayload>): Promise<IAlert | null> {
-    return await AlertModel.findByIdAndUpdate(id, updates, { new: true }).exec();
+    return AlertStore.update(id, updates);
   }
 
   /**
    * Delete alert
    */
   static async deleteAlert(id: string): Promise<boolean> {
-    const result = await AlertModel.findByIdAndDelete(id).exec();
-    return result !== null;
+    return AlertStore.delete(id);
   }
 
   /**
    * Toggle alert enabled status
    */
   static async toggleAlert(id: string, enabled: boolean): Promise<IAlert | null> {
-    return await AlertModel.findByIdAndUpdate(id, { enabled }, { new: true }).exec();
+    return AlertStore.update(id, { enabled });
   }
 }

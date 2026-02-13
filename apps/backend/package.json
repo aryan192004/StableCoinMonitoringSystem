@@ -5,9 +5,9 @@
   "scripts": {
     "dev:api": "nodemon api/server.ts",
     "dev:services": "uvicorn services.main:app --reload --port 8001",
-    "dev": "concurrently \"npm:dev:api\" \"npm:dev:services\"",
+    "dev": "npm run dev:api",
     "build": "tsc && tsc-alias",
-    "start": "concurrently \"npm:dev:api\" \"npm:dev:services\"",
+    "start": "npm run dev:api",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts",
