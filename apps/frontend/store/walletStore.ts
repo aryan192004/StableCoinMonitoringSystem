@@ -20,7 +20,9 @@ export const useWalletStore = create<WalletStore>()(
       
       try {
         if (typeof window === 'undefined' || !window.ethereum) {
-          throw new Error('MetaMask is not installed');
+          const msg = 'MetaMask is not installed. Install from https://metamask.io/ or use a browser wallet with an injected provider.';
+          set({ isConnecting: false, error: msg });
+          return;
         }
 
         const { BrowserProvider } = await import('ethers');
@@ -72,7 +74,8 @@ export const useWalletStore = create<WalletStore>()(
           isConnecting: false,
           error: errorMessage,
         });
-        throw error;
+        // Do not re-throw to avoid uncaught promise rejections in UI flows
+        return;
       }
     },
 
@@ -90,7 +93,9 @@ export const useWalletStore = create<WalletStore>()(
     switchNetwork: async (targetChainId: number) => {
       try {
         if (!window.ethereum) {
-          throw new Error('MetaMask is not installed');
+          const msg = 'MetaMask is not installed. Install from https://metamask.io/ or use a compatible wallet.';
+          set({ error: msg });
+          return;
         }
 
         await window.ethereum.request({
@@ -98,7 +103,9 @@ export const useWalletStore = create<WalletStore>()(
           params: [{ chainId: `0x${targetChainId.toString(16)}` }],
         });
       } catch (error) {
-        throw error;
+        const errorMessage = error instanceof Error ? error.message : 'Failed to switch network';
+        set({ error: errorMessage });
+        return;
       }
     },
   }), {
