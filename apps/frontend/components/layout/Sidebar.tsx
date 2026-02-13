@@ -15,6 +15,7 @@ const navigation = [
   { name: 'Liquidity Monitor', href: '/dashboard/liquidity', icon: '💧' },
   { name: 'Alerts', href: '/dashboard/alerts', icon: '🔔' },
   { name: 'Analytics', href: '/dashboard/analytics', icon: '📈' },
+   { name: 'Market Updates', href: '/dashboard/updates', icon: '📰' },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
