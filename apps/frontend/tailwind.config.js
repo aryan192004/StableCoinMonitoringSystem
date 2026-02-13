@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -9,57 +10,35 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: '#3B82F6',
-          hover: '#2563EB',
-          light: '#DBEAFE',
-          dark: '#1E40AF',
-        },
-        success: {
-          DEFAULT: '#22C55E',
-          light: '#86EFAC',
-          dark: '#16A34A',
-        },
-        warning: {
-          DEFAULT: '#F59E0B',
-          light: '#FCD34D',
-          dark: '#D97706',
-        },
-        danger: {
-          DEFAULT: '#EF4444',
-          light: '#FCA5A5',
-          dark: '#DC2626',
-        },
-        background: '#F5F7FB',
-        surface: '#FFFFFF',
-        border: '#E5E7EB',
-        textPrimary: '#111827',
-        textSecondary: '#6B7280',
-        textTertiary: '#9CA3AF',
+        /* DARK BASE */
+        background: '#0B0F17',
+        surface: '#111827',
+        surfaceElevated: '#182233',
+        surfaceHover: '#1F2A3A',
+        border: '#1F2937',
+
+        /* TEXT */
+        textPrimary: '#E5E7EB',
+        textSecondary: '#9CA3AF',
+        textMuted: '#6B7280',
+
+        /* NEON ACCENTS */
+        primary: '#22D3EE',
+        success: '#22C55E',
+        warning: '#FACC15',
+        danger: '#F43F5E',
       },
+
+      boxShadow: {
+        card: '0 6px 30px rgba(0,0,0,0.6)',
+        hover: '0 10px 40px rgba(0,0,0,0.8)',
+        neon: '0 0 20px rgba(34,211,238,0.25)',
+      },
+
       borderRadius: {
         xl2: '14px',
       },
-      boxShadow: {
-        card: '0 4px 20px rgba(0, 0, 0, 0.05)',
-        cardHover: '0 8px 30px rgba(0, 0, 0, 0.08)',
-        soft: '0 2px 8px rgba(0, 0, 0, 0.04)',
-      },
-      animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'fade-in': 'fadeIn 0.3s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-      },
+
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
