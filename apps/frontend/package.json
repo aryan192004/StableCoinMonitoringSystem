@@ -18,6 +18,8 @@
     "ethers": "^6.10.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.0.6",
+    "jspdf": "^4.1.0",
+    "jspdf-autotable": "^5.0.7",
     "lightweight-charts": "^4.1.1",
     "next": "^14.1.0",
     "react": "^18.2.0",
@@ -30,6 +32,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
+    "@types/jspdf": "^2.0.0",
     "@types/node": "^20.19.33",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
