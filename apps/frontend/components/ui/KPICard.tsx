@@ -48,7 +48,7 @@ export const KPICard: React.FC<KPICardProps> = ({
               {change !== undefined && (
                 <span className={clsx('text-sm font-medium flex items-center gap-0.5', trendColors[trend])}>
                   <span>{trendIcons[trend]}</span>
-                  <span>{Math.abs(change)}%</span>
+                  <span>{Math.abs(change).toFixed(2)}%</span>
                 </span>
               )}
             </div>

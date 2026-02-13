@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout';
 import { Card, CardHeader, CardTitle, CardBody, KPICard } from '@/components/ui';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui';
 import { PriceChart } from '@/components/charts';
 import { 
+  useStablecoins,
   useStablecoin, 
   usePegHistory, 
   useLiquidityData, 
@@ -27,6 +28,15 @@ export default function StablecoinDetailPage() {
   const params = useParams();
   const stablecoinId = params?.id as string || 'usdt';
   const [timePeriod, setTimePeriod] = useState('7d');
+  const router = useRouter();
+
+  // coin list for selector
+  const { stablecoins, isLoading: stablecoinsLoading } = useStablecoins();
+  const [selectedCoin, setSelectedCoin] = useState<string>('');
+
+  useEffect(() => {
+    setSelectedCoin(stablecoinId);
+  }, [stablecoinId]);
 
   // Fetch all data using hooks
   const { stablecoin, isLoading: stablecoinLoading, isError: stablecoinError } = useStablecoin(stablecoinId);
@@ -149,6 +159,32 @@ export default function StablecoinDetailPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={() => router.push('/dashboard/stablecoins')}>Back</Button>
+
+            {/* Coin selector to quickly switch coins */}
+            <div className="min-w-[200px]">
+              {stablecoinsLoading ? (
+                <div className="h-8 w-48 bg-gray-200 animate-pulse rounded" />
+              ) : (
+                <select
+                  value={selectedCoin}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    setSelectedCoin(id);
+                    if (id) router.push(`/dashboard/stablecoins/${id}`);
+                  }}
+                  className="px-3 py-2 bg-surface border border-border rounded-lg text-textPrimary"
+                >
+                  <option value="">Switch coin...</option>
+                  {stablecoins?.map((c: any) => {
+                    const id = c.id || c.symbol?.toLowerCase() || '';
+                    const label = `${c.name || id.toUpperCase()} (${c.symbol || id.toUpperCase()})`;
+                    return <option key={id} value={id}>{label}</option>;
+                  })}
+                </select>
+              )}
+            </div>
+
             <Button variant="outline">Export Data</Button>
             <Button variant="primary">Set Alert</Button>
           </div>

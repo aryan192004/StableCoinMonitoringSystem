@@ -35,8 +35,22 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     });
 
     res.json(stablecoins);
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    console.error('Failed to fetch multiple prices, returning fallback list:', error?.message || error);
+    // Return a conservative fallback list so frontend still works
+    const fallback = ['usdt', 'usdc', 'dai', 'busd'].map((symbol) => ({
+      id: symbol,
+      name: getStablecoinName(symbol),
+      symbol: symbol.toUpperCase(),
+      price: 1.0,
+      pegDeviation: 0,
+      volume24h: 0,
+      marketCap: 0,
+      riskScore: 0,
+      lastUpdated: new Date().toISOString(),
+    }));
+
+    res.json(fallback);
   }
 });
 
@@ -66,8 +80,23 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     };
 
     res.json(stablecoin);
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    console.error(`Failed to fetch price for ${req.params.id}:`, error?.message || error);
+    // Provide a safe fallback so the frontend can render a page
+    const id = (req.params.id || 'usdt').toLowerCase();
+    const fallback = {
+      id,
+      name: getStablecoinName(id),
+      symbol: id.toUpperCase(),
+      price: 1.0,
+      pegDeviation: 0,
+      volume24h: 0,
+      marketCap: 0,
+      change24h: 0,
+      riskScore: 0,
+      lastUpdated: new Date().toISOString(),
+    };
+    res.json(fallback);
   }
 });
 

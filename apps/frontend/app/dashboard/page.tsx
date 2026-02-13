@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import {
   BanknotesIcon,
   ChartBarIcon,
@@ -21,6 +22,7 @@ import {
 import { RiskBadge } from '@/components/ui/Badge';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const kpiData = [
   {
     title: 'Total Market Cap',
@@ -164,7 +166,11 @@ export default function DashboardPage() {
             </TableHead>
             <TableBody>
               {stablecoins.map((coin, index) => (
-                <TableRow key={index} onClick={() => console.log(`View ${coin.symbol}`)}>
+                <TableRow 
+                  key={index} 
+                  onClick={() => router.push(`/dashboard/stablecoins/${coin.symbol.toLowerCase()}`)}
+
+                >
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm">
@@ -192,7 +198,7 @@ export default function DashboardPage() {
                   </TableCell>
                   <TableCell>
                     <span className={coin.change24h >= 0 ? 'text-success' : 'text-danger'}>
-                      {coin.change24h >= 0 ? '+' : ''}{coin.change24h}%
+                      {coin.change24h >= 0 ? '+' : ''}{coin.change24h.toFixed(2)}%
                     </span>
                   </TableCell>
                 </TableRow>
