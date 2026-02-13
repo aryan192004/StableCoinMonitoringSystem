@@ -1,19 +1,89 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/components/layout';
 import { Card, CardHeader, CardTitle, CardBody, KPICard } from '@/components/ui';
 
-export default function AnalyticsPage() {
-  const metrics = [
-    { title: 'Market Stability Index', value: '-', change: undefined, trend: 'neutral' as const, icon: '-' },
-    { title: 'Systemic Risk Level', value: '-', trend: 'neutral' as const, icon: '-' },
-    { title: 'Correlation Index', value: '-', change: undefined, trend: 'neutral' as const, icon: '-' },
-    { title: 'Volatility Score', value: '-', change: undefined, trend: 'neutral' as const, icon: '-' },
-  ];
+type Metric = { title: string; value: string | number; change?: number; trend: 'up' | 'down' | 'neutral'; icon?: any };
 
-  const correlationData = [
+export default function AnalyticsPage() {
+  const [metrics, setMetrics] = useState<Metric[]>([
+    { title: 'Market Stability Index', value: '-', change: undefined, trend: 'neutral' },
+    { title: 'Systemic Risk Level', value: '-', change: undefined, trend: 'neutral' },
+    { title: 'Correlation Index', value: '-', change: undefined, trend: 'neutral' },
+    { title: 'Volatility Score', value: '-', change: undefined, trend: 'neutral' },
+  ]);
+
+  const [correlationData, setCorrelationData] = useState<Array<{ coin1: string; coin2: string; correlation: number; strength: string }>>([
     { coin1: '-', coin2: '-', correlation: 0, strength: '-' },
-  ];
+  ]);
+
+  // Default stablecoin for coin-specific endpoints
+  const defaultCoin = 'usdt';
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function fetchAnalytics() {
+      try {
+        // Market Stability
+        const stabilityRes = await fetch(`http://localhost:8001/analytics/stability/${defaultCoin}`);
+        const stability = stabilityRes.ok ? await stabilityRes.json() : null;
+
+        // Systemic Risk
+        const systemicRes = await fetch(`http://localhost:8001/analytics/systemic-risk`);
+        const systemic = systemicRes.ok ? await systemicRes.json() : null;
+
+        // Correlation
+        const corrRes = await fetch(`http://localhost:8001/analytics/correlation`);
+        const corr = corrRes.ok ? await corrRes.json() : null;
+
+        // Volatility
+        const volRes = await fetch(`http://localhost:8001/analytics/volatility/${defaultCoin}`);
+        const vol = volRes.ok ? await volRes.json() : null;
+
+        if (!mounted) return;
+
+        setMetrics((prev) => {
+          const next = [...prev];
+          if (stability) next[0] = { ...next[0], value: stability.stability_index?.toFixed ? Number(stability.stability_index).toFixed(2) : stability.stability_index, change: undefined, trend: 'neutral' };
+          if (systemic) next[1] = { ...next[1], value: systemic.systemic_risk_level ?? (systemic.risk_class ?? '-'), change: undefined, trend: 'neutral' };
+          if (corr) next[2] = { ...next[2], value: corr.correlation_index?.toFixed ? Number(corr.correlation_index).toFixed(2) : corr.correlation_index, change: undefined, trend: 'neutral' };
+          if (vol) next[3] = { ...next[3], value: vol.volatility_score?.toFixed ? Number(vol.volatility_score).toFixed(2) : vol.volatility_score, change: undefined, trend: 'neutral' };
+          return next;
+        });
+
+        if (corr && corr.correlation_matrix) {
+          // Build a small list from the matrix (show first row correlations)
+          const matrix = corr.correlation_matrix as number[][];
+          const names = ['USDT', 'USDC', 'DAI', 'BUSD'];
+          const rows: Array<{ coin1: string; coin2: string; correlation: number; strength: string }> = [];
+          const n = Math.min(names.length, matrix.length);
+          for (let i = 0; i < n; i++) {
+            for (let j = i + 1; j < n; j++) {
+              const val = Number.isFinite(matrix[i][j]) ? matrix[i][j] : 0;
+              let strength = '-';
+              const a = Math.abs(val);
+              if (a > 0.75) strength = 'Strong';
+              else if (a > 0.4) strength = 'Moderate';
+              else strength = 'Weak';
+              rows.push({ coin1: names[i], coin2: names[j], correlation: val, strength });
+            }
+          }
+          if (rows.length > 0) setCorrelationData(rows.slice(0, 6));
+        } else if (corr && corr.correlation_index) {
+          setCorrelationData([{ coin1: 'USDT', coin2: 'USDC', correlation: corr.correlation_index / 100, strength: 'Derived' }]);
+        }
+
+      } catch (err) {
+        // keep UI stable; metrics stay as default
+      }
+    }
+
+    fetchAnalytics();
+
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <DashboardLayout>
@@ -33,13 +103,13 @@ export default function AnalyticsPage() {
               value={metric.value}
               change={metric.change}
               trend={metric.trend}
-              icon={<span className="text-2xl">{metric.icon}</span>}
+              icon={<span className="text-2xl">{metric.icon ?? '-'}</span>}
             />
           ))}
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          {/* Market Composition */}
+          {/* Market Composition (unchanged) */}
           <Card>
             <CardHeader>
               <CardTitle>Market Cap Distribution</CardTitle>
@@ -77,7 +147,7 @@ export default function AnalyticsPage() {
             </CardBody>
           </Card>
 
-          {/* Correlation Matrix */}
+          {/* Correlation Matrix (wired to state) */}
           <Card>
             <CardHeader>
               <CardTitle>Price Correlation Matrix</CardTitle>
@@ -92,13 +162,13 @@ export default function AnalyticsPage() {
                         {data.coin1} ↔ {data.coin2}
                       </span>
                       <span className="text-sm font-semibold text-primary">
-                        {data.correlation.toFixed(2)}
+                        {(data.correlation * 100).toFixed(2)}
                       </span>
                     </div>
                     <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
                         className="absolute inset-y-0 left-0 bg-gradient-to-r from-success to-primary rounded-full transition-all"
-                        style={{ width: `${data.correlation * 100}%` }}
+                        style={{ width: `${Math.abs(data.correlation) * 100}%` }}
                       />
                     </div>
                     <div className="mt-1 text-xs text-textSecondary">
@@ -111,7 +181,7 @@ export default function AnalyticsPage() {
           </Card>
         </div>
 
-        {/* Historical Trends */}
+        {/* Historical Trends (unchanged) */}
         <Card>
           <CardHeader>
             <CardTitle>Market Cap Trends (30 Days)</CardTitle>
@@ -165,10 +235,8 @@ export default function AnalyticsPage() {
           </CardBody>
         </Card>
 
-        {/* Risk Breakdown */}
+        {/* Risk Breakdown (unchanged) */}
         <div className="grid lg:grid-cols-3 gap-6">
-          
-
           <Card>
             <CardHeader>
               <CardTitle>Exchange Concentration</CardTitle>
@@ -189,8 +257,6 @@ export default function AnalyticsPage() {
               </div>
             </CardBody>
           </Card>
-
-          
         </div>
       </div>
     </DashboardLayout>
