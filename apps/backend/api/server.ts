@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import { errorHandler } from './middleware/errorHandler';
 import { logger } from './middleware/logger';
 import stablecoinRoutes from './routes/stablecoin';
@@ -21,6 +22,18 @@ const io = new SocketIOServer(httpServer, {
     methods: ['GET', 'POST'],
   },
 });
+
+// MongoDB Connection
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://sairamesh4551621_db_user:7eu1kp022ZgjLhyf@cluster0.buhtzae.mongodb.net/stablecoin-monitor?retryWrites=true&w=majority';
+
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('❌ MongoDB connection error:', error.message);
+    // Continue running even if MongoDB fails (for development)
+  });
 
 // Middleware
 app.use(helmet());
@@ -41,6 +54,7 @@ app.get('/', (req: Request, res: Response) => {
     message: 'Stablecoin Monitoring API',
     version: '1.0.0',
     status: 'running',
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
   });
 });
 

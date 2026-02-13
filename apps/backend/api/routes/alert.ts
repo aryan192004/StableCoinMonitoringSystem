@@ -1,16 +1,21 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { Alert } from '@stablecoin/types';
+import { AlertService } from '../services/alertService';
 
 const router = Router();
 
 /**
  * GET /api/alerts
- * Get all alerts for authenticated user
+ * Get all alerts (optionally filter by stablecoinId)
  */
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // TODO: Implement authentication and fetch user's alerts
-    const alerts: Alert[] = [];
+    const { stablecoinId, enabled } = req.query;
+    
+    const filter: any = {};
+    if (stablecoinId) filter.stablecoinId = stablecoinId;
+    if (enabled !== undefined) filter.enabled = enabled === 'true';
+
+    const alerts = await AlertService.listAlerts(filter);
     res.json(alerts);
   } catch (error) {
     next(error);
@@ -23,23 +28,25 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
  */
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { stablecoinId, type, threshold, channels } = req.body;
+    const { stablecoinId, name, type, condition, threshold, channels, enabled } = req.body;
 
-    // TODO: Implement alert creation logic
-    const alert = {
-      id: 'alert-1',
-      userId: 'user-1',
+    const alert = await AlertService.createAlert({
       stablecoinId,
+      name: name || `${stablecoinId} ${type} Alert`,
       type,
-      threshold,
-      channels,
-      enabled: true,
-      createdAt: new Date(),
-    };
+      condition,
+      threshold: parseFloat(threshold),
+      channels: channels || ['email'],
+      enabled: enabled !== undefined ? enabled : true,
+    });
 
     res.status(201).json(alert);
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    if (error.message.includes('required fields') || error.message.includes('valid number')) {
+      res.status(400).json({ error: error.message });
+    } else {
+      next(error);
+    }
   }
 });
 
@@ -52,8 +59,18 @@ router.patch('/:id', async (req: Request, res: Response, next: NextFunction) => 
     const { id } = req.params;
     const updates = req.body;
 
-    // TODO: Implement alert update logic
-    res.json({ id, ...updates });
+    // If threshold is provided, parse it
+    if (updates.threshold !== undefined) {
+      updates.threshold = parseFloat(updates.threshold);
+    }
+
+    const alert = await AlertService.updateAlert(id, updates);
+    
+    if (!alert) {
+      return res.status(404).json({ error: 'Alert not found' });
+    }
+    
+    res.json(alert);
   } catch (error) {
     next(error);
   }
@@ -65,9 +82,14 @@ router.patch('/:id', async (req: Request, res: Response, next: NextFunction) => 
  */
 router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id: _id } = req.params; // eslint-disable-line @typescript-eslint/no-unused-vars
+    const { id } = req.params;
 
-    // TODO: Implement alert deletion logic
+    const deleted = await AlertService.deleteAlert(id);
+    
+    if (!deleted) {
+      return res.status(404).json({ error: 'Alert not found' });
+    }
+    
     res.status(204).send();
   } catch (error) {
     next(error);
