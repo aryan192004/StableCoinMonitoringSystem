@@ -5,17 +5,26 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
+import {
+  HomeIcon,
+  CurrencyDollarIcon,
+  BellIcon,
+  ChartBarIcon,
+  NewspaperIcon,
+  BeakerIcon,
+} from '@heroicons/react/24/outline';
+
 interface SidebarProps {
   className?: string;
 }
 
 const navigation = [
-  { name: 'Markets Overview', href: '/dashboard', icon: '📊', exact: true },
-  { name: 'Stablecoins', href: '/dashboard/stablecoins', icon: '💰' },
-  { name: 'Liquidity Monitor', href: '/dashboard/liquidity', icon: '💧' },
-  { name: 'Alerts', href: '/dashboard/alerts', icon: '🔔' },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: '📈' },
-   { name: 'Market Updates', href: '/dashboard/updates', icon: '📰' },
+  { name: 'Markets Overview', href: '/dashboard', icon: HomeIcon, exact: true },
+  { name: 'Stablecoins', href: '/dashboard/stablecoins', icon: CurrencyDollarIcon },
+  { name: 'Liquidity Monitor', href: '/dashboard/liquidity', icon: BeakerIcon },
+  { name: 'Alerts', href: '/dashboard/alerts', icon: BellIcon },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBarIcon },
+  { name: 'Market Updates', href: '/dashboard/updates', icon: NewspaperIcon },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
@@ -40,6 +49,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             ? pathname === item.href
             : pathname.startsWith(item.href);
 
+          const Icon = item.icon; // ✅ IMPORTANT
+
           return (
             <Link
               key={item.name}
@@ -51,7 +62,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
                   : 'text-textSecondary hover:bg-surfaceHover hover:text-textPrimary'
               )}
             >
-              <span className="text-lg">{item.icon}</span>
+              {/* ✅ Render icon as component */}
+              <Icon className="w-5 h-5 opacity-90" />
+
               <span>{item.name}</span>
             </Link>
           );
