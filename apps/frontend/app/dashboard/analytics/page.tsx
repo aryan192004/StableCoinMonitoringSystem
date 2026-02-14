@@ -70,7 +70,7 @@ export default function AnalyticsPage() {
               rows.push({ coin1: names[i], coin2: names[j], correlation: val, strength });
             }
           }
-          if (rows.length > 0) setCorrelationData(rows.slice(0, 6));
+          if (rows.length > 0) setCorrelationData(rows.slice(0, 3)); // Only show three correlations
         } else if (corr && corr.correlation_index) {
           setCorrelationData([{ coin1: 'USDT', coin2: 'USDC', correlation: corr.correlation_index / 100, strength: 'Derived' }]);
         }
