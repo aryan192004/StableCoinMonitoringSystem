@@ -13,7 +13,7 @@ import {
   NewspaperIcon,
   BeakerIcon,
   BriefcaseIcon,
-
+ArrowsRightLeftIcon,
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -28,6 +28,7 @@ const navigation = [
   { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBarIcon },
   { name: 'Market Updates', href: '/dashboard/updates', icon: NewspaperIcon },
   { name: 'My Portfolio', href: '/dashboard/portfolio', icon: BriefcaseIcon },
+   { name: 'Capital Flows', href: '/dashboard/flows', icon: ArrowsRightLeftIcon },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
