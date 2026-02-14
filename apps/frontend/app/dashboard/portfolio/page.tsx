@@ -7,6 +7,10 @@ import { PortfolioOverview, AllocationChart, TokenTable } from '@/components/por
 import { useWallet } from '@/hooks/useWallet';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { PortfolioAnalysisService } from '@/services/portfolioService';
+import { ChartBarIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, GlobeAltIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+
+
 
 export default function PortfolioPage() {
   const [isConnecting, setIsConnecting] = useState(false);
@@ -171,9 +175,10 @@ export default function PortfolioPage() {
               <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
                 
                 {/* Icon Placeholder */}
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary text-2xl">
-                  📊
-                </div>
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+  <ChartBarIcon className="w-8 h-8" />
+</div>
+
 
                 <h3 className="text-lg font-semibold text-textPrimary">
                   No Portfolio Data Yet
@@ -198,9 +203,23 @@ export default function PortfolioPage() {
                 </div>
 
                 <div className="text-xs text-textSecondary mt-4">
-                  <p>✅ MetaMask Required</p>
-                  <p>🌐 Ethereum Mainnet Only</p>
-                  <p>🔒 No private keys stored</p>
+                 <div className="space-y-2 text-sm text-muted-foreground">
+  <p className="flex items-center gap-2">
+    <CheckCircleIcon className="w-5 h-5 text-green-500" />
+    MetaMask Required
+  </p>
+
+  <p className="flex items-center gap-2">
+    <GlobeAltIcon className="w-5 h-5 text-primary" />
+    Ethereum Mainnet Only
+  </p>
+
+  <p className="flex items-center gap-2">
+    <LockClosedIcon className="w-5 h-5 text-primary" />
+    No private keys stored
+  </p>
+</div>
+
                 </div>
               </div>
             </CardBody>
