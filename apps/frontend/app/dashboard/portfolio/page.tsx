@@ -332,12 +332,7 @@ export default function PortfolioPage() {
                     </div>
                   </div>
                   
-                  {/* ML Integration Note */}
-                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-                    <p className="text-xs text-blue-600">
-                      🔬 Advanced ML risk scoring coming soon - this is a basic placeholder
-                    </p>
-                  </div>
+                 
                 </CardBody>
               </Card>
             </div>
