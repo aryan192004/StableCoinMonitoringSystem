@@ -17,6 +17,7 @@ import riskRoutes from './routes/risk';
 import anomaliesRoutes from './routes/anomalies';
 import newsRoutes from './routes/news';
 import portfolioRoutes from './routes/portfolio';
+import capitalFlowsRoutes from './routes/capitalFlows';
 
 const app: Application = express();
 const httpServer = createServer(app);
@@ -45,6 +46,7 @@ app.use('/api/risk', riskRoutes);
 app.use('/api/anomalies', anomaliesRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/capital-flows', capitalFlowsRoutes);
 
 // Root endpoint
 app.get('/', (req: Request, res: Response) => {

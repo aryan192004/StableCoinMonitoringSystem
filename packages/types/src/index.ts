@@ -213,3 +213,54 @@ export interface PortfolioRiskMetrics {
   };
   recommendations: string[];
 }
+
+/**
+ * Capital Flows Types
+ */
+export interface CapitalFlowEvent {
+  id: string;
+  type: 'mint' | 'burn' | 'whale_transfer' | 'exchange_inflow' | 'exchange_outflow';
+  stablecoin: string;
+  amount: number;
+  amountFormatted: string;
+  impact: 'low' | 'medium' | 'high';
+  description: string;
+  txHash?: string;
+  fromAddress?: string;
+  toAddress?: string;
+  exchangeName?: string;
+  timestamp: Date;
+  blockNumber?: number;
+  gasUsed?: string;
+}
+
+export interface CapitalFlowSummary {
+  totalMints24h: number;
+  totalBurns24h: number;
+  netExchangeInflow24h: number;
+  largestTransaction24h: CapitalFlowEvent;
+  topStablecoinByVolume: string;
+  marketImpactEvents: number;
+  lastUpdated: Date;
+}
+
+export interface CapitalFlowMetrics {
+  stablecoin: string;
+  minted24h: number;
+  burned24h: number;
+  netFlow24h: number;
+  exchangeInflow24h: number;
+  exchangeOutflow24h: number;
+  whaleActivity24h: number;
+  avgTransactionSize: number;
+  timestamp: Date;
+}
+
+export interface CapitalFlowFilters {
+  stablecoin?: string[];
+  types?: CapitalFlowEvent['type'][];
+  minAmount?: number;
+  impact?: CapitalFlowEvent['impact'][];
+  timeRange?: '1h' | '24h' | '7d' | '30d';
+  exchanges?: string[];
+}
