@@ -182,59 +182,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Historical Trends (unchanged) */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Market Cap Trends (30 Days)</CardTitle>
-            <div className="flex items-center gap-2">
-              <button className="px-3 py-1 text-sm rounded-lg bg-primary text-white">30D</button>
-              <button className="px-3 py-1 text-sm rounded-lg text-textSecondary hover:bg-gray-100">90D</button>
-              <button className="px-3 py-1 text-sm rounded-lg text-textSecondary hover:bg-gray-100">1Y</button>
-            </div>
-          </CardHeader>
-          <CardBody>
-            <div className="h-64 flex items-end gap-1">
-              {Array.from({ length: 30 }).map((_, i) => {
-                const height = 30 + Math.sin(i / 5) * 20 + Math.random() * 15;
-                return (
-                  <div key={i} className="flex-1 flex flex-col-reverse gap-0.5">
-                    <div 
-                      className="bg-primary/30 hover:bg-primary/50 transition-colors cursor-pointer rounded-t"
-                      style={{ height: `${height}%` }}
-                      title={`Day ${i + 1}: $${(150 + Math.random() * 10).toFixed(1)}B`}
-                    />
-                    <div 
-                      className="bg-success/30 hover:bg-success/50 transition-colors cursor-pointer rounded-t"
-                      style={{ height: `${height * 0.6}%` }}
-                    />
-                    <div 
-                      className="bg-warning/30 hover:bg-warning/50 transition-colors cursor-pointer rounded-t"
-                      style={{ height: `${height * 0.3}%` }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex items-center justify-between mt-4">
-              <span className="text-xs text-textSecondary">30 days ago</span>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-sm bg-primary/30" />
-                  <span className="text-xs text-textSecondary">Total Market</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-sm bg-success/30" />
-                  <span className="text-xs text-textSecondary">Top 3</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-sm bg-warning/30" />
-                  <span className="text-xs text-textSecondary">Others</span>
-                </div>
-              </div>
-              <span className="text-xs text-textSecondary">Today</span>
-            </div>
-          </CardBody>
-        </Card>
-
+       
         {/* Risk Breakdown (unchanged) */}
         <div className="grid lg:grid-cols-3 gap-6">
           
