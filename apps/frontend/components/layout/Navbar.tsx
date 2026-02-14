@@ -1,13 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Button } from '../ui/Button';
 
 interface NavbarProps {
   className?: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ className }) => {
+export const Navbar: React.FC<NavbarProps> = () => {
   return (
     <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-6">
       {/* Search */}

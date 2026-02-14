@@ -6,7 +6,7 @@ import { Button } from '@/components/ui';
 export default function ContactSalesPage() {
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
   };

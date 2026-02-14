@@ -2,6 +2,7 @@
 
 # Machine Learning
 xgboost>=2.0.0              # XGBoost model for risk scoring
+lightgbm>=4.0.0             # LightGBM for stability index model
 scikit-learn>=1.3.0         # ML utilities, train/test split, metrics, Isolation Forest
 joblib>=1.3.0               # Model serialization
 
