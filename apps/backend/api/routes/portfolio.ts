@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { PortfolioService } from '../services/portfolioService';
 
-const router = Router();
+const router: Router = Router();
 const portfolioService = new PortfolioService();
 
 /**

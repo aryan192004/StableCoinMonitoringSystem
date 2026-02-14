@@ -23,7 +23,7 @@ const POPULAR_TOKENS = [
 const STABLECOIN_SYMBOLS = ['USDT', 'USDC', 'DAI', 'BUSD', 'FRAX', 'TUSD'];
 
 export class PortfolioService {
-  private provider: ethers.Provider;
+  private provider: any;
   private coingeckoBaseUrl = 'https://api.coingecko.com/api/v3';
 
   constructor() {
