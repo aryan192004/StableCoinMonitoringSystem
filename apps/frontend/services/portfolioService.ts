@@ -128,32 +128,32 @@ export class PortfolioAnalysisService {
     
     // Value insights
     if (portfolio.totalValueUsd > 100000) {
-      insights.push('🏆 High-value portfolio detected');
+      insights.push('High-value portfolio detected');
     } else if (portfolio.totalValueUsd < 1000) {
-      insights.push('🌱 Early stage portfolio');
+      insights.push('Early stage portfolio');
     }
 
     // Stablecoin exposure insights
     if (portfolio.stablecoinExposure > 80) {
-      insights.push('🏛️ High stablecoin exposure provides stability but limits growth potential');
+      insights.push('High stablecoin exposure provides stability but limits growth potential');
     } else if (portfolio.stablecoinExposure < 10) {
-      insights.push('⚡ Low stablecoin exposure increases volatility risk');
+      insights.push('Low stablecoin exposure increases volatility risk');
     } else {
-      insights.push('⚖️ Balanced stablecoin exposure detected');
+      insights.push('Balanced stablecoin exposure detected');
     }
 
     // Diversification insights
     const uniqueTokens = portfolio.tokenBalances.length + 1; // +1 for ETH
     if (uniqueTokens < 3) {
-      insights.push('📊 Consider diversifying across more assets');
+      insights.push('Consider diversifying across more assets');
     } else if (uniqueTokens > 10) {
-      insights.push('🎯 Highly diversified portfolio - consider consolidation');
+      insights.push('Highly diversified portfolio - consider consolidation');
     }
 
     // Top holding insights
     const topAllocation = portfolio.allocations[0];
     if (topAllocation && topAllocation.percentage > 70) {
-      insights.push(`⚠️ High concentration in ${topAllocation.symbol} (${topAllocation.percentage.toFixed(1)}%)`);
+      insights.push(`High concentration in ${topAllocation.symbol} (${topAllocation.percentage.toFixed(1)}%)`);
     }
 
     return insights;
