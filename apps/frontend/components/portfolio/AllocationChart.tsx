@@ -6,6 +6,9 @@ import { Pie } from 'react-chartjs-2';
 import { TokenAllocation } from '@stablecoin/types';
 import { PortfolioAnalysisService } from '@/services/portfolioService';
 import { Card, CardHeader, CardTitle, CardBody } from '@/components/ui';
+import { WalletIcon } from '@heroicons/react/24/outline';
+
+
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -70,19 +73,20 @@ export const AllocationChart: React.FC<AllocationChartProps> = ({
 
   if (allocations.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Asset Allocation</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <div className="flex items-center justify-center h-64 text-textSecondary">
-            <div className="text-center">
-              <div className="text-4xl mb-2">📊</div>
-              <p>No assets to display</p>
-            </div>
-          </div>
-        </CardBody>
-      </Card>
+     <Card>
+  <CardHeader>
+    <CardTitle>Asset Allocation</CardTitle>
+  </CardHeader>
+  <CardBody>
+    <div className="flex items-center justify-center h-64 text-textSecondary">
+      <div className="text-center">
+        <WalletIcon className="w-12 h-12 mx-auto mb-2 text-primary/70" />
+        <p>No assets to display</p>
+      </div>
+    </div>
+  </CardBody>
+</Card>
+
     );
   }
 
