@@ -13,6 +13,7 @@ import os
 
 # Import our services (uncomment after installing dependencies)
 from services.api_clients import CoinAPIClient
+from services.deviation_calculator import MLDeviationCalculator
 
 # from services.feature_engineering import FeatureEngineer, StressScenarioSimulator
 # from services.risk_model import RiskScoringModel
@@ -57,6 +58,7 @@ class CompareRequest(BaseModel):
 
 # Initialize ML services
 coinapi_client = CoinAPIClient(api_key=os.getenv("COINAPI_KEY", ""))
+ml_deviation_calculator = MLDeviationCalculator()
 # binance_client = BinanceClient()
 # feature_engineer = FeatureEngineer(coinapi_client, binance_client)
 # risk_model = RiskScoringModel()
@@ -420,6 +422,116 @@ async def models_status():
         "volatility_model": {"type": "Ridge", "version": "v1.0", "loaded": False, "r2": 0.82},
         "timestamp": datetime.utcnow().isoformat(),
     }
+
+
+@app.get("/ml/peg-deviation/{stablecoin}")
+async def get_ml_peg_deviation(stablecoin: str, period: int = 7):
+    """
+    ML-enhanced peg deviation analysis.
+
+    Computes deviation metrics using ML models:
+    - Fetches historical price data
+    - Calculates percent deviation from $1.00 peg
+    - Applies ML anomaly detection (when available)
+    - Returns time-series data and aggregate metrics
+
+    Args:
+        stablecoin: Symbol (usdt, usdc, dai, etc.)
+        period: Historical period in days (default: 7)
+
+    Returns:
+        {
+            "id": "usdt",
+            "period": "7d",
+            "data": [{"timestamp": 1234567890, "price": 1.0001, "deviation": 0.01, "ml_score": -0.1}, ...],
+            "metrics": {
+                "maxDeviation": 0.15,
+                "averageDeviation": 0.03,
+                "minDeviation": 0.0,
+                "volatility": 0.05,
+                "stability": 99.7
+            },
+            "timestamp": "2026-02-14T...",
+            "data_points": 168
+        }
+    """
+    try:
+        result = await ml_deviation_calculator.compute_deviation_metrics(
+            stablecoin=stablecoin, period_days=period
+        )
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"ML deviation computation failed: {str(e)}")
+
+
+@app.get("/ml/cache/stats")
+async def get_cache_stats():
+    """
+    Get ML deviation cache statistics.
+
+    Returns information about cached precomputed deviations.
+    """
+    return ml_deviation_calculator.get_cache_stats()
+
+
+@app.post("/ml/cache/clear")
+async def clear_deviation_cache():
+    """
+    Clear ML deviation cache.
+
+    Forces recomputation on next request.
+    """
+    ml_deviation_calculator.clear_cache()
+    return {"status": "success", "message": "Cache cleared"}
+
+
+# Background task for precomputing deviations
+async def precompute_deviations_task():
+    """
+    Background task that precomputes deviations for popular stablecoins.
+    Runs periodically to keep cache warm.
+    """
+    stablecoins = ["usdt", "usdc", "dai", "busd", "frax", "tusd"]
+    periods = [7, 30]  # 7-day and 30-day windows
+
+    while True:
+        try:
+            print(f"\n🔄 Starting precompute task at {datetime.utcnow().isoformat()}")
+
+            for coin in stablecoins:
+                for period in periods:
+                    try:
+                        print(f"  - Precomputing {coin} ({period}d)...")
+                        await ml_deviation_calculator.compute_deviation_metrics(
+                            stablecoin=coin, period_days=period
+                        )
+                        # Small delay to avoid rate limits
+                        await asyncio.sleep(2)
+                    except Exception as e:
+                        print(f"  ✗ Error precomputing {coin} ({period}d): {e}")
+
+            print(
+                f"✓ Precompute task completed. Cache stats: {ml_deviation_calculator.get_cache_stats()}"
+            )
+
+            # Wait before next precompute cycle (default: 5 minutes)
+            precompute_interval = int(os.getenv("PRECOMPUTE_INTERVAL_MIN", "5"))
+            await asyncio.sleep(precompute_interval * 60)
+
+        except Exception as e:
+            print(f"✗ Precompute task error: {e}")
+            await asyncio.sleep(60)  # Wait 1 minute before retry
+
+
+@app.on_event("startup")
+async def startup_event():
+    """
+    Start background precompute task when server starts.
+    """
+    print("🚀 Starting ML Deviation Precompute Background Task...")
+    asyncio.create_task(precompute_deviations_task())
 
 
 if __name__ == "__main__":

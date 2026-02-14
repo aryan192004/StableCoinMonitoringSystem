@@ -2,8 +2,13 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { PriceDataPoint } from '@stablecoin/types';
 import * as priceService from '../services/priceService';
 import * as exchangeService from '../services/exchangeService';
+import axios from 'axios';
 
 const router: Router = Router();
+
+// ML Service configuration
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8001';
+const ML_SERVICE_TIMEOUT = 5000; // 5 seconds
 
 /**
  * GET /api/stablecoins
@@ -102,25 +107,76 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * GET /api/stablecoins/:id/peg-history
- * Get historical peg data
+ * Get historical peg data with ML-enhanced deviation metrics
  */
 router.get('/:id/peg-history', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { period = '30' } = req.query;
+    const { period = '7' } = req.query;
 
-    // Convert period to days
-    const days = parseInt(period as string, 10) || 30;
-    
+    // Parse period - support both '7d' and '7' formats
+    const periodStr = String(period);
+    const days = parseInt(periodStr.replace(/[^\d]/g, ''), 10) || 7;
+
+    console.log(`Fetching ML-enhanced peg history for ${id} (${days}d)...`);
+
+    try {
+      // Try to fetch from ML service first
+      const mlResponse = await axios.get(
+        `${ML_SERVICE_URL}/ml/peg-deviation/${id}`,
+        {
+          params: { period: days },
+          timeout: ML_SERVICE_TIMEOUT,
+        }
+      );
+
+      if (mlResponse.data && mlResponse.data.data) {
+        // ML service returned data - format for frontend
+        const mlData = mlResponse.data;
+        
+        // Map ML data format to frontend expected format
+        const formattedData = mlData.data.map((point: any) => ({
+          timestamp: point.timestamp,
+          price: point.price,
+          deviation: point.deviation, // ML-computed deviation (already in percent)
+          ml_score: point.ml_score,
+        }));
+
+        console.log(`✓ ML service returned ${formattedData.length} points with metrics:`, mlData.metrics);
+
+        return res.json({
+          id,
+          period: `${days}d`,
+          data: formattedData,
+          metrics: mlData.metrics, // Pass through ML metrics
+          timestamp: mlData.timestamp,
+          source: 'ml_service',
+        });
+      }
+    } catch (mlError: any) {
+      console.warn(`ML service unavailable (${mlError.message}), falling back to local computation`);
+      // Fall through to local computation
+    }
+
+    // Fallback: Use local price service
+    console.log(`Using local price service for ${id}...`);
     const historicalData = await priceService.getHistoricalPrices(id, days);
     const pegMetrics = priceService.calculatePegMetrics(historicalData);
+
+    // Map pegDeviation to deviation for frontend compatibility
+    const formattedData = historicalData.map((point: any) => ({
+      timestamp: point.timestamp,
+      price: point.price,
+      deviation: point.pegDeviation, // Map pegDeviation -> deviation
+    }));
 
     res.json({
       id,
       period: `${days}d`,
-      data: historicalData,
+      data: formattedData,
       metrics: pegMetrics,
       timestamp: new Date().toISOString(),
+      source: 'fallback',
     });
   } catch (error) {
     next(error);
