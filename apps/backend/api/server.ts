@@ -1,9 +1,13 @@
+import dotenv from 'dotenv';
+
+// Load environment variables FIRST before other imports
+dotenv.config();
+
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler';
 import { logger } from './middleware/logger';
 import stablecoinRoutes from './routes/stablecoin';
@@ -11,8 +15,7 @@ import alertRoutes from './routes/alert';
 import healthRoutes from './routes/health';
 import riskRoutes from './routes/risk';
 import anomaliesRoutes from './routes/anomalies';
-
-dotenv.config();
+import newsRoutes from './routes/news';
 
 const app: Application = express();
 const httpServer = createServer(app);
@@ -39,6 +42,7 @@ app.use('/api/stablecoins', stablecoinRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/risk', riskRoutes);
 app.use('/api/anomalies', anomaliesRoutes);
+app.use('/api/news', newsRoutes);
 
 // Root endpoint
 app.get('/', (req: Request, res: Response) => {

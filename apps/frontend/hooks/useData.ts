@@ -192,3 +192,83 @@ export function useReserveData(id: string, refreshInterval: number = 300000) {
     refresh: mutate,
   };
 }
+
+/**
+ * News article type
+ */
+export interface NewsArticle {
+  title: string;
+  description: string;
+  url: string;
+  source: string;
+  publishedAt: string;
+  sentiment: {
+    score: number;
+    compound: number;
+    positive: number;
+    negative: number;
+    neutral: number;
+    label: 'positive' | 'negative' | 'neutral';
+  };
+  riskScore: number; // 0-100, calculated from sentiment (0=low risk, 100=high risk)
+  content?: string;
+  urlToImage?: string;
+  author?: string;
+}
+
+interface NewsResponse {
+  success: boolean;
+  count: number;
+  articles: NewsArticle[];
+}
+
+/**
+ * Hook to fetch stablecoin news with sentiment analysis
+ */
+export function useNews(query?: string, limit: number = 20, refreshInterval: number = 900000) {
+  const params = new URLSearchParams();
+  if (query) params.append('query', query);
+  if (limit) params.append('limit', limit.toString());
+  
+  const endpoint = `/news${params.toString() ? '?' + params.toString() : ''}`;
+  
+  const { data, error, mutate } = useSWR<NewsResponse>(
+    endpoint,
+    fetcher,
+    { 
+      refreshInterval, // 15 minutes default
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    articles: data?.articles || [],
+    count: data?.count || 0,
+    isLoading: !error && !data,
+    isError: error,
+    refresh: mutate,
+  };
+}
+
+/**
+ * Hook to fetch trending stablecoin news
+ */
+export function useTrendingNews(limit: number = 10, refreshInterval: number = 900000) {
+  const { data, error, mutate } = useSWR<NewsResponse>(
+    `/news/trending?limit=${limit}`,
+    fetcher,
+    { 
+      refreshInterval,
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    articles: data?.articles || [],
+    count: data?.count || 0,
+    isLoading: !error && !data,
+    isError: error,
+    refresh: mutate,
+  };
+}
+

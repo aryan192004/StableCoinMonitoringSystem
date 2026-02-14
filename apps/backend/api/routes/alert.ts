@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { AlertService } from '../services/alertService';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * GET /api/alerts

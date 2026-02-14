@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "pnpm --parallel --filter \"./apps/**\" dev",
+    "dev": "pnpm --parallel --filter \"@stablecoin/*\" dev",
     "build": "pnpm --filter \"./packages/**\" build && pnpm --filter \"./apps/**\" build",
     "test": "pnpm --filter \"./packages/**\" test && pnpm --filter \"./apps/**\" test",
     "lint": "pnpm --parallel --filter \"./packages/**\" lint && pnpm --filter \"./apps/**\" lint",

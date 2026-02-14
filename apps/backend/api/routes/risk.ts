@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * GET /api/risk/:stablecoin
