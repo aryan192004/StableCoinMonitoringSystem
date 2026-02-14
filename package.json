@@ -14,7 +14,8 @@
     "lint": "pnpm --parallel --filter \"./packages/**\" lint && pnpm --filter \"./apps/**\" lint",
     "clean": "pnpm --parallel --filter \"./packages/**\" clean && pnpm --filter \"./apps/**\" clean",
     "setup": "pnpm install && pnpm build",
-    "start": "pnpm --filter ./apps/backend start"
+    "start": "pnpm --filter ./apps/backend start",
+    "start:fastapi": "cd apps/backend && python -m uvicorn main:app --host 0.0.0.0 --port 8001 --reload"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
