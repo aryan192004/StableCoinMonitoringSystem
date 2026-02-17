@@ -28,8 +28,18 @@ out/
 *.egg-info/
 
 # Environment variables
+.env
+.env.*
 .env*.local
 .env.production
+.envrc
+.aws/credentials
+.azure/
+.gcp/
+.secrets/
+.credentials
+.pem
+.key
 
 # IDEs
 .vscode/
