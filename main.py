@@ -5,6 +5,7 @@ This file loads the real FastAPI `app` defined in `apps/backend/main.py`.
 It ensures the backend package directory is on `sys.path` so imports inside
 `apps/backend/main.py` (like `from services...`) resolve correctly.
 """
+
 from __future__ import annotations
 
 import os
